@@ -1,0 +1,31 @@
+{
+    "name": "bex/behat-test-runner",
+    "type": "library",
+    "description": "Component to help in self testing Behat extension development",
+    "keywords": ["tdd","bdd","behat","extension"],
+    "homepage": "https://github.com/elvetemedve/behat-test-runner",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Geza Buza",
+            "email": "bghome@gmail.com",
+            "homepage": "https://twitter.com/medve540",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : "^5.4",
+        "behat/behat" : "^3.0.0"
+    },
+    "require-dev": {
+        "phpspec/phpspec" : "^2.3.0"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bex\\Behat\\Context\\": "src"
+        }
+    }
+}

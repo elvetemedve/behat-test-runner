@@ -84,10 +84,11 @@ class TestRunnerContext implements SnippetAcceptingContext
      * TestRunnerContext constructor.
      *
      * @param string|null $browserCommand Shell command which executes the tester browser
+     * @param Filesystem $filesystem
      */
-    public function __construct($browserCommand = null)
+    public function __construct($browserCommand = null, Filesystem $filesystem = null)
     {
-        $this->filesystem = new Filesystem();
+        $this->filesystem = $filesystem ?: new Filesystem();
         $this->browserCommand = $browserCommand;
     }
 
@@ -96,7 +97,7 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function createWorkingDirectory()
     {
-        $this->workingDirectory = tempnam(sys_get_temp_dir(), 'behat-screenshot');
+        $this->workingDirectory = tempnam(sys_get_temp_dir(), 'behat-test-runner');
         $this->filesystem->remove($this->workingDirectory);
         $this->filesystem->mkdir($this->workingDirectory . '/features/bootstrap', 0770);
 
@@ -114,11 +115,12 @@ class TestRunnerContext implements SnippetAcceptingContext
     /**
      * @BeforeScenario
      */
-    public function createProcesses()
-    {
-        $this->behatProcess = new Process(null);
-        $this->webServerProcess = new Process(null);
-        $this->browserProcess = new Process(null);
+    public function createProcesses(
+        Process $behatProcess = null, Process $serverProcess = null, Process $browserProcess = null
+    ) {
+        $this->behatProcess = $behatProcess ?: new Process(null);
+        $this->webServerProcess = $serverProcess ?: new Process(null);
+        $this->browserProcess = $browserProcess ?: new Process(null);
     }
 
     /**

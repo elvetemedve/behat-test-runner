@@ -5,6 +5,7 @@ namespace Bex\Behat\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
+use Bex\Behat\Context\Services\ProcessFactory;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\PhpExecutableFinder;
@@ -68,33 +69,53 @@ class TestRunnerContext implements SnippetAcceptingContext
     /** @var string $documentRoot Root directory of the web server */
     private $documentRoot;
 
-    /** @var Process $behatProcess */
+    /** @var Process[] $processes Active processes */
+    private $processes = [];
+
+    /** @var Process $behatProcess Active behat process */
     private $behatProcess;
-
-    /** @var Process $webServerProcess */
-    private $webServerProcess;
-
-    /** @var Process $browserProcess */
-    private $browserProcess;
 
     /** @var string $browserCommand */
     private $browserCommand;
 
+    /** @var ProcessFactory $processFactory */
+    private $processFactory;
+
     /**
      * TestRunnerContext constructor.
      *
-     * @param string|null $browserCommand Shell command which executes the tester browser
-     * @param Filesystem $filesystem
+     * @param string|null         $browserCommand Shell command which executes the tester browser
+     * @param Filesystem|null     $fileSystem
+     * @param ProcessFactory|null $processFactory
      */
-    public function __construct($browserCommand = null, Filesystem $filesystem = null)
-    {
-        $this->filesystem = $filesystem ?: new Filesystem();
+    public function __construct(
+        $browserCommand = null,
+        Filesystem $fileSystem = null,
+        ProcessFactory $processFactory = null
+    ) {
         $this->browserCommand = $browserCommand;
+        $this->filesystem = $fileSystem ?: new Filesystem();
+        $this->processFactory = $processFactory ?: new ProcessFactory();
     }
 
     /**
      * @BeforeScenario
      */
+    public function beforeRunTests()
+    {
+        $this->createWorkingDirectory();
+    }
+
+    /**
+     * @AfterScenario
+     */
+    public function afterRunTests(AfterScenarioScope $scope)
+    {
+        $this->printTesterOutputOnFailure($scope);
+        $this->clearWorkingDirectory();
+        $this->destroyProcesses();
+    }
+    
     public function createWorkingDirectory()
     {
         $this->workingDirectory = tempnam(sys_get_temp_dir(), 'behat-test-runner');
@@ -104,41 +125,25 @@ class TestRunnerContext implements SnippetAcceptingContext
         $this->documentRoot = $this->workingDirectory .'/document_root';
         $this->filesystem->mkdir($this->documentRoot, 0770);
     }
-    /**
-     * @AfterScenario
-     */
+
     public function clearWorkingDirectory()
     {
         $this->filesystem->remove($this->workingDirectory);
     }
 
-    /**
-     * @BeforeScenario
-     */
-    public function createProcesses(
-        Process $behatProcess = null, Process $serverProcess = null, Process $browserProcess = null
-    ) {
-        $this->behatProcess = $behatProcess ?: new Process(null);
-        $this->webServerProcess = $serverProcess ?: new Process(null);
-        $this->browserProcess = $browserProcess ?: new Process(null);
-    }
-
-    /**
-     * @AfterScenario
-     */
-    public function stopProcessesIfRunning()
+    public function destroyProcesses()
     {
         /** @var Process $process */
-        foreach ([$this->behatProcess, $this->webServerProcess, $this->browserProcess] as $process) {
+        foreach ($this->processes as $process) {
             if ($process->isRunning()) {
                 $process->stop(10);
             }
         }
+
+        $this->processes = [];
+        $this->behatProcess = null;
     }
 
-    /**
-     * @AfterScenario
-     */
     public function printTesterOutputOnFailure(AfterScenarioScope $scope)
     {
         if (!$scope->getTestResult()->isPassed()) {
@@ -240,34 +245,17 @@ class TestRunnerContext implements SnippetAcceptingContext
 
     private function runBehat()
     {
-        $phpFinder = new PhpExecutableFinder();
-        $phpBin = $phpFinder->find();
-        $this->behatProcess->setWorkingDirectory($this->workingDirectory);
-        $this->behatProcess->setCommandLine(
-            sprintf(
-                '%s %s --no-colors',
-                $phpBin,
-                escapeshellarg(BEHAT_BIN_PATH)
-            )
-        );
-        $this->behatProcess->run();
+        $behatProcess = $this->processFactory->createBehatProcess($this->workingDirectory);
+        $this->behatProcess = $behatProcess;
+        $this->processes[] = $this->behatProcess;
+        $behatProcess->run();
     }
 
     private function runWebServer($hostname, $port)
     {
-        $phpFinder = new PhpExecutableFinder();
-        $phpBin = $phpFinder->find();
-        $this->webServerProcess->setWorkingDirectory($this->documentRoot);
-        $this->webServerProcess->setCommandLine(
-            sprintf(
-                '%s -S %s:%s -t %s',
-                $phpBin,
-                escapeshellarg($hostname),
-                escapeshellarg($port),
-                escapeshellarg($this->documentRoot)
-            )
-        );
-        $this->webServerProcess->start();
+        $webServerProcess = $this->processFactory->createWebServerProcess($this->documentRoot, $hostname, $port);
+        $this->processes[] = $webServerProcess;
+        $webServerProcess->start();
     }
 
     private function runBrowser()
@@ -276,8 +264,8 @@ class TestRunnerContext implements SnippetAcceptingContext
             return;
         }
 
-        $this->browserProcess->setWorkingDirectory($this->workingDirectory);
-        $this->browserProcess->setCommandLine(escapeshellcmd($this->browserCommand));
-        $this->browserProcess->start();
+        $browserProcess = $this->processFactory->createBrowserProcess($this->browserCommand, $this->workingDirectory);
+        $this->processes[] = $browserProcess;
+        $browserProcess->start();
     }
 }

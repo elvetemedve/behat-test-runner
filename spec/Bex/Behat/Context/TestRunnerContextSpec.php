@@ -150,7 +150,7 @@ class TestRunnerContextSpec extends ObjectBehavior
 
         $webServerProcess->start()->shouldBeCalled();
         $browserProcess->start()->shouldNotBeCalled();
-        
+
         $this->createWorkingDirectory();
         $this->iHaveAWebServerRunningOnAddressAndPort(Argument::any(), Argument::any());
     }

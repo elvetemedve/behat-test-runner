@@ -224,6 +224,16 @@ class TestRunnerContext implements SnippetAcceptingContext
     }
 
     /**
+     * @Then I should not see a failing test
+     */
+    public function iShouldNotSeeAFailingTest()
+    {
+        if ($this->behatProcess->getExitCode() != 0) {
+            throw new RuntimeException('Behat found a failing scenario.');
+        }
+    }
+
+    /**
      * Returns the output of Behat command
      *
      * @return string

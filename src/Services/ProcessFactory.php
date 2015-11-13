@@ -5,6 +5,11 @@ namespace Bex\Behat\Context\Services;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
+/**
+ * This factory class creates various processes used by the tester
+ *
+ * @license http://opensource.org/licenses/MIT The MIT License
+ */
 class ProcessFactory
 {
     private $phpBin;

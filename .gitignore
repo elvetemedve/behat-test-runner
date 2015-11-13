@@ -3,3 +3,6 @@
 
 # Composer packages directory
 /vendor
+
+# Composer installed package cache
+/.composer.lock

@@ -32,7 +32,7 @@ class ProcessFactory
     public function createBehatProcess($workingDirectory, $parameters = '')
     {
         return new Process(
-            sprintf('%s %s', BEHAT_BIN_PATH, $parameters),
+            sprintf('%s %s --no-colors %s', $this->phpBin, escapeshellarg(BEHAT_BIN_PATH), $parameters),
             $workingDirectory
         );
     }

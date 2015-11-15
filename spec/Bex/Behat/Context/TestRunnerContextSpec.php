@@ -83,7 +83,8 @@ class TestRunnerContextSpec extends ObjectBehavior
     function it_runs_behat_in_working_directory(ProcessFactory $processFactory, Process $process)
     {
         $processFactory->createBehatProcess(
-            Argument::containingString(sys_get_temp_dir() .'/behat-test-runner')
+            Argument::containingString(sys_get_temp_dir() .'/behat-test-runner'),
+            Argument::any()
         )->shouldBeCalled()->willReturn($process);
         $process->run()->shouldBeCalled();
 
@@ -116,7 +117,7 @@ class TestRunnerContextSpec extends ObjectBehavior
         ProcessFactory $processFactory,
         Process $process
     ) {
-        $processFactory->createBehatProcess(Argument::any())->willReturn($process);
+        $processFactory->createBehatProcess(Argument::any(), Argument::any())->willReturn($process);
         $this->createWorkingDirectory();
         $this->iRunBehat();
 

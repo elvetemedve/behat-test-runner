@@ -30,6 +30,11 @@ class TestRunnerContextSpec extends ObjectBehavior
         defined('BEHAT_BIN_PATH') or define('BEHAT_BIN_PATH', 'bin/behat');
     }
 
+    function letgo()
+    {
+        (new Filesystem())->remove(glob(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'behat-test-runner*'));
+    }
+
     function it_is_initializable()
     {
         $this->shouldHaveType('Bex\Behat\Context\TestRunnerContext');

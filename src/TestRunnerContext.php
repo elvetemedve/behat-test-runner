@@ -233,7 +233,7 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function iShouldSeeAFailingTest()
     {
-        if ($this->behatProcess->getExitCode() === 0) {
+        if ($this->behatProcess->isSuccessful()) {
             throw new RuntimeException('Behat did not find any failing scenario.');
         }
     }
@@ -243,7 +243,7 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function iShouldNotSeeAFailingTest()
     {
-        if ($this->behatProcess->getExitCode() !== 0) {
+        if (!$this->behatProcess->isSuccessful()) {
             throw new RuntimeException('Behat found a failing scenario.');
         }
     }

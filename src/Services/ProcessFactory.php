@@ -51,7 +51,7 @@ class ProcessFactory
         $documentRoot = escapeshellarg($documentRoot);
 
         return new Process(
-            sprintf('%s -S %s:%s -t %s', $this->phpBin, $hostname, $port, $documentRoot),
+            sprintf('exec %s -S %s:%s -t %s', $this->phpBin, $hostname, $port, $documentRoot),
             $documentRoot
         );
     }
@@ -65,7 +65,7 @@ class ProcessFactory
     public function createBrowserProcess($browserCommand, $workingDirectory)
     {
         return new Process(
-            escapeshellcmd($browserCommand),
+            'exec ' . escapeshellcmd($browserCommand),
             $workingDirectory
         );
     }

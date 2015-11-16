@@ -111,9 +111,9 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function afterRunTests(AfterScenarioScope $scope)
     {
-        $this->printTesterOutputOnFailure($scope);
         $this->clearWorkingDirectory();
         $this->destroyProcesses();
+        $this->printTesterOutputOnFailure($scope);
     }
     
     /**
@@ -150,7 +150,6 @@ class TestRunnerContext implements SnippetAcceptingContext
         }
 
         $this->processes = [];
-        $this->behatProcess = null;
     }
 
     /**

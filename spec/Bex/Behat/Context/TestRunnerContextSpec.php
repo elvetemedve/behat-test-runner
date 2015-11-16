@@ -121,12 +121,12 @@ class TestRunnerContextSpec extends ObjectBehavior
         $this->createWorkingDirectory();
         $this->iRunBehat();
 
-        $process->getExitCode()->willReturn(0);
+        $process->isSuccessful()->willReturn(true);
         $this->shouldThrow(
             new \RuntimeException('Behat did not find any failing scenario.')
         )->duringIShouldSeeAFailingTest();
 
-        $process->getExitCode()->willReturn(255);
+        $process->isSuccessful()->willReturn(false);
         $this->shouldNotThrow('\RuntimeException')->duringIShouldSeeAFailingTest();
     }
 

@@ -116,6 +116,9 @@ class TestRunnerContext implements SnippetAcceptingContext
         $this->destroyProcesses();
     }
     
+    /**
+     * @return void
+     */
     public function createWorkingDirectory()
     {
         $this->workingDirectory = tempnam(sys_get_temp_dir(), 'behat-test-runner');
@@ -126,11 +129,17 @@ class TestRunnerContext implements SnippetAcceptingContext
         $this->filesystem->mkdir($this->documentRoot, 0770);
     }
 
+    /**
+     * @return void
+     */
     public function clearWorkingDirectory()
     {
         $this->filesystem->remove($this->workingDirectory);
     }
 
+    /**
+     * @return void
+     */
     public function destroyProcesses()
     {
         /** @var Process $process */
@@ -144,6 +153,9 @@ class TestRunnerContext implements SnippetAcceptingContext
         $this->behatProcess = null;
     }
 
+    /**
+     * @param  AfterScenarioScope $scope
+     */
     public function printTesterOutputOnFailure(AfterScenarioScope $scope)
     {
         if (!$scope->getTestResult()->isPassed()) {
@@ -177,6 +189,7 @@ class TestRunnerContext implements SnippetAcceptingContext
             $content->getRaw()
         );
     }
+    
     /**
      * @Given I have the context:
      */
@@ -190,10 +203,12 @@ class TestRunnerContext implements SnippetAcceptingContext
 
     /**
      * @When I run Behat
+     * @When I run Behat with :paramters parameter
+     * @When I run Behat with :paramters parameters
      */
-    public function iRunBehat()
+    public function iRunBehat($parameters = '')
     {
-        $this->runBehat();
+        $this->runBehat($parameters);
     }
 
     /**
@@ -218,7 +233,7 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function iShouldSeeAFailingTest()
     {
-        if ($this->behatProcess->getExitCode() == 0) {
+        if ($this->behatProcess->isSuccessful()) {
             throw new RuntimeException('Behat did not find any failing scenario.');
         }
     }
@@ -228,7 +243,7 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function iShouldNotSeeAFailingTest()
     {
-        if ($this->behatProcess->getExitCode() != 0) {
+        if (!$this->behatProcess->isSuccessful()) {
             throw new RuntimeException('Behat found a failing scenario.');
         }
     }
@@ -253,14 +268,25 @@ class TestRunnerContext implements SnippetAcceptingContext
         return $this->behatProcess->getErrorOutput();
     }
 
-    private function runBehat()
+    /**
+     * @param  string $parameters
+     *
+     * @return void
+     */
+    private function runBehat($parameters = '')
     {
-        $behatProcess = $this->processFactory->createBehatProcess($this->workingDirectory);
+        $behatProcess = $this->processFactory->createBehatProcess($this->workingDirectory, $parameters);
         $this->behatProcess = $behatProcess;
         $this->processes[] = $this->behatProcess;
         $behatProcess->run();
     }
 
+    /**
+     * @param  string $hostname
+     * @param  string $port
+     *
+     * @return void
+     */
     private function runWebServer($hostname, $port)
     {
         $webServerProcess = $this->processFactory->createWebServerProcess($this->documentRoot, $hostname, $port);
@@ -268,6 +294,9 @@ class TestRunnerContext implements SnippetAcceptingContext
         $webServerProcess->start();
     }
 
+    /**
+     * @return void
+     */
     private function runBrowser()
     {
         if (is_null($this->browserCommand)) {

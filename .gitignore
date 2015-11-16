@@ -5,4 +5,4 @@
 /vendor
 
 # Composer installed package cache
-/.composer.lock
+/composer.lock

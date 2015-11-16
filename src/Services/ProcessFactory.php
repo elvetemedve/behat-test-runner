@@ -25,13 +25,14 @@ class ProcessFactory
 
     /**
      * @param  string $workingDirectory
+     * @param  string $parameters
      *
      * @return Process
      */
-    public function createBehatProcess($workingDirectory)
+    public function createBehatProcess($workingDirectory, $parameters = '')
     {
         return new Process(
-            sprintf('%s %s --no-colors', $this->phpBin, escapeshellarg(BEHAT_BIN_PATH)),
+            sprintf('%s %s %s', $this->phpBin, escapeshellarg(BEHAT_BIN_PATH), $parameters),
             $workingDirectory
         );
     }

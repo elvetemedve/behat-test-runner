@@ -8,7 +8,6 @@ use Behat\Gherkin\Node\PyStringNode;
 use Bex\Behat\Context\Services\ProcessFactory;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 
 /**
@@ -155,10 +154,10 @@ class TestRunnerContext implements SnippetAcceptingContext
     /**
      * @param  AfterScenarioScope $scope
      */
-    public function printTesterOutputOnFailure(AfterScenarioScope $scope)
+    public function printTesterOutputOnFailure($scope)
     {
         if (!$scope->getTestResult()->isPassed()) {
-            $outputFile = sys_get_temp_dir() . '/behat-screenshot.out';
+            $outputFile = sys_get_temp_dir() . '/behat-test-runner.out';
             $this->filesystem->dumpFile(
                 $outputFile,
                 $this->behatProcess->getOutput() . $this->behatProcess->getErrorOutput()

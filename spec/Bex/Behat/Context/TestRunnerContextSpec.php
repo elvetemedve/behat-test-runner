@@ -3,6 +3,8 @@
 namespace spec\Bex\Behat\Context;
 
 use Behat\Gherkin\Node\PyStringNode;
+use Behat\Testwork\Hook\Scope\AfterTestScope;
+use Behat\Testwork\Tester\Result\TestResult;
 use Bex\Behat\Context\Services\ProcessFactory;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -19,12 +21,18 @@ use Symfony\Component\Process\Process;
  */
 class TestRunnerContextSpec extends ObjectBehavior
 {
-    function let(Filesystem $filesystem, ProcessFactory $processFactory)
+    function let(Filesystem $filesystem, ProcessFactory $processFactory, Process $behatProcess)
     {
         $this->beConstructedWith('bin/phantomjs', $filesystem, $processFactory);
         $this->initFilesystemDouble($filesystem);
+        $this->initProcessFactoryDouble($processFactory, $behatProcess);
 
         defined('BEHAT_BIN_PATH') or define('BEHAT_BIN_PATH', 'bin/behat');
+    }
+
+    function letgo()
+    {
+        (new Filesystem())->remove(glob(sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'behat-test-runner*'));
     }
 
     function it_is_initializable()
@@ -156,9 +164,26 @@ class TestRunnerContextSpec extends ObjectBehavior
         $this->iHaveAWebServerRunningOnAddressAndPort(Argument::any(), Argument::any());
     }
 
+    function it_dumps_the_output_of_secondary_behat_to_file_on_failure(
+        AfterTestScope $scope, TestResult $testResult, Filesystem $filesystem
+    ) {
+        $scope->getTestResult()->willReturn($testResult);
+        $testResult->isPassed()->willReturn(false);
+
+        $filesystem->dumpFile(Argument::containingString('behat-test-runner.out'), Argument::any())->shouldBeCalled();
+
+        $this->iRunBehat();
+        $this->shouldThrow('\RuntimeException')->duringPrintTesterOutputOnFailure($scope);
+    }
+
     private function initFilesystemDouble($filesystem)
     {
         $filesystem->remove(Argument::type('string'))->willReturn(null);
         $filesystem->mkdir(Argument::type('string'), Argument::type('int'))->willReturn(null);
+    }
+
+    private function initProcessFactoryDouble(ProcessFactory $processFactory, Process $behatProcess)
+    {
+        $processFactory->createBehatProcess(Argument::any(), Argument::any())->willReturn($behatProcess);
     }
 }

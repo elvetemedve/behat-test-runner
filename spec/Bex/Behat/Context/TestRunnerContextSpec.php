@@ -92,7 +92,7 @@ class TestRunnerContextSpec extends ObjectBehavior
     {
         $processFactory->createBehatProcess(
             Argument::containingString(sys_get_temp_dir() .'/behat-test-runner'),
-            Argument::any()
+            Argument::cetera()
         )->shouldBeCalled()->willReturn($process);
         $process->run()->shouldBeCalled();
 
@@ -121,24 +121,21 @@ class TestRunnerContextSpec extends ObjectBehavior
         $this->iHaveAWebServerRunningOnAddressAndPort('localhost', '8080');
     }
 
-    function it_can_detect_when_there_was_no_failing_tests_but_expected(
-        ProcessFactory $processFactory,
-        Process $process
-    ) {
-        $processFactory->createBehatProcess(Argument::any(), Argument::any())->willReturn($process);
+    function it_can_detect_when_there_was_no_failing_tests_but_expected(Process $behatProcess)
+    {
         $this->createWorkingDirectory();
         $this->iRunBehat();
 
-        $process->isSuccessful()->willReturn(true);
+        $behatProcess->isSuccessful()->willReturn(true);
         $this->shouldThrow(
             new \RuntimeException('Behat did not find any failing scenario.')
         )->duringIShouldSeeAFailingTest();
 
-        $process->isSuccessful()->willReturn(false);
+        $behatProcess->isSuccessful()->willReturn(false);
         $this->shouldNotThrow('\RuntimeException')->duringIShouldSeeAFailingTest();
     }
 
-    function it_does_not_run_browser_when_broser_binary_is_not_set(
+    function it_does_not_run_browser_when_browser_binary_is_not_set(
         Filesystem $filesystem,
         ProcessFactory $processFactory,
         Process $webServerProcess,
@@ -176,6 +173,16 @@ class TestRunnerContextSpec extends ObjectBehavior
         $this->shouldThrow('\RuntimeException')->duringPrintTesterOutputOnFailure($scope);
     }
 
+    function it_can_pass_command_line_options_to_php_when_running_behat(
+        ProcessFactory $processFactory,
+        Process $behatProcess
+    ) {
+        $processFactory->createBehatProcess(Argument::any(), Argument::any(), '-x foo')->willReturn($behatProcess)
+            ->shouldBeCalled();
+
+        $this->iRunBehat('', '-x foo');
+    }
+
     private function initFilesystemDouble($filesystem)
     {
         $filesystem->remove(Argument::type('string'))->willReturn(null);
@@ -184,6 +191,6 @@ class TestRunnerContextSpec extends ObjectBehavior
 
     private function initProcessFactoryDouble(ProcessFactory $processFactory, Process $behatProcess)
     {
-        $processFactory->createBehatProcess(Argument::any(), Argument::any())->willReturn($behatProcess);
+        $processFactory->createBehatProcess(Argument::cetera())->willReturn($behatProcess);
     }
 }

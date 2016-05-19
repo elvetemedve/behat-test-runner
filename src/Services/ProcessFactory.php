@@ -24,15 +24,16 @@ class ProcessFactory
     }
 
     /**
-     * @param  string $workingDirectory
-     * @param  string $parameters
-     *
+     * @param string $workingDirectory
+     * @param string $parameters
+     * @param string $phpParameters PHP CLI arguments @link http://php.net/manual/en/features.commandline.options.php
+     * 
      * @return Process
      */
-    public function createBehatProcess($workingDirectory, $parameters = '')
+    public function createBehatProcess($workingDirectory, $parameters = '', $phpParameters = '')
     {
         return new Process(
-            sprintf('%s %s %s', $this->phpBin, escapeshellarg(BEHAT_BIN_PATH), $parameters),
+            sprintf('%s %s %s %s', $this->phpBin, $phpParameters, escapeshellarg(BEHAT_BIN_PATH), $parameters),
             $workingDirectory
         );
     }

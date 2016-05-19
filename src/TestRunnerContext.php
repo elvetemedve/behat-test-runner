@@ -201,12 +201,13 @@ class TestRunnerContext implements SnippetAcceptingContext
 
     /**
      * @When I run Behat
-     * @When I run Behat with :paramters parameter
-     * @When I run Behat with :paramters parameters
+     * @When /^I run Behat with "([^"]*)" parameter[s]?$/
+     * @When /^I run Behat with "([^"]*)" parameter[s]? and with PHP CLI arguments "([^"]*)"$/
+     * @When I run Behat with PHP CLI arguments :phpParams
      */
-    public function iRunBehat($parameters = '')
+    public function iRunBehat($parameters = '', $phpParameters = '')
     {
-        $this->runBehat($parameters);
+        $this->runBehat($parameters, $phpParameters);
     }
 
     /**
@@ -267,13 +268,14 @@ class TestRunnerContext implements SnippetAcceptingContext
     }
 
     /**
-     * @param  string $parameters
+     * @param string $parameters
+     * @param string $phpParameters
      *
      * @return void
      */
-    private function runBehat($parameters = '')
+    private function runBehat($parameters = '', $phpParameters = '')
     {
-        $behatProcess = $this->processFactory->createBehatProcess($this->workingDirectory, $parameters);
+        $behatProcess = $this->processFactory->createBehatProcess($this->workingDirectory, $parameters, $phpParameters);
         $this->behatProcess = $behatProcess;
         $this->processes[] = $this->behatProcess;
         $behatProcess->run();

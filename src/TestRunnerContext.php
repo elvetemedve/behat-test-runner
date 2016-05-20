@@ -203,7 +203,7 @@ class TestRunnerContext implements SnippetAcceptingContext
      * @When I run Behat
      * @When /^I run Behat with "([^"]*)" parameter[s]?$/
      * @When /^I run Behat with "([^"]*)" parameter[s]? and with PHP CLI arguments "([^"]*)"$/
-     * @When I run Behat with PHP CLI arguments :phpParams
+     * @When I run Behat with PHP CLI arguments :phpParameters
      */
     public function iRunBehat($parameters = '', $phpParameters = '')
     {

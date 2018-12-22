@@ -127,6 +127,14 @@ class TestRunnerContext implements SnippetAcceptingContext
         $this->documentRoot = $this->workingDirectory .'/document_root';
         $this->filesystem->mkdir($this->documentRoot, 0770);
     }
+    
+    /**
+     * @return string
+     */
+    public function getWorkingDirectory()
+    {
+        return $this->workingDirectory;
+    }
 
     /**
      * @return void

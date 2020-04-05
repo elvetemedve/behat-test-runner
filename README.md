@@ -40,6 +40,16 @@ default:
             browserCommand: %paths.base%/bin/phantomjs --webdriver=4444
 ```
 
+You can configure the working directory like this:
+```yml
+default:
+  suites:
+    default:
+      contexts:
+        - Bex\Behat\Context\TestRunnerContext:
+            workingDirectory: path/to/your/working/dir # default: /tmp/behat-test-runner
+```
+
 Usage
 -----
 

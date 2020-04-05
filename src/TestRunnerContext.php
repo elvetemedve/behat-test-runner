@@ -80,19 +80,25 @@ class TestRunnerContext implements SnippetAcceptingContext
     /** @var ProcessFactory $processFactory */
     private $processFactory;
 
+    /** @var string[] List of created files */
+    private $files = [];
+
     /**
      * TestRunnerContext constructor.
      *
      * @param string|null         $browserCommand Shell command which executes the tester browser
+     * @param string|null         $workingDirectory
      * @param Filesystem|null     $fileSystem
      * @param ProcessFactory|null $processFactory
      */
     public function __construct(
         $browserCommand = null,
+        $workingDirectory = null,
         Filesystem $fileSystem = null,
         ProcessFactory $processFactory = null
     ) {
         $this->browserCommand = $browserCommand;
+        $this->workingDirectory = $workingDirectory;
         $this->filesystem = $fileSystem ?: new Filesystem();
         $this->processFactory = $processFactory ?: new ProcessFactory();
     }
@@ -120,12 +126,21 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function createWorkingDirectory()
     {
-        $this->workingDirectory = tempnam(sys_get_temp_dir(), 'behat-test-runner');
-        $this->filesystem->remove($this->workingDirectory);
-        $this->filesystem->mkdir($this->workingDirectory . '/features/bootstrap', 0770);
+        if (empty($this->workingDirectory)) {
+            $this->workingDirectory = tempnam(sys_get_temp_dir(), 'behat-test-runner');
+        }
+
+        $featuresDirectory = $this->workingDirectory . '/features/bootstrap';
+
+        if (!$this->filesystem->exists($featuresDirectory)) {
+            $this->filesystem->mkdir($this->workingDirectory . '/features/bootstrap', 0770);
+        }
 
         $this->documentRoot = $this->workingDirectory .'/document_root';
-        $this->filesystem->mkdir($this->documentRoot, 0770);
+
+        if (!$this->filesystem->exists($featuresDirectory)) {
+            $this->filesystem->mkdir($this->documentRoot, 0770);
+        }
     }
     
     /**
@@ -141,7 +156,8 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function clearWorkingDirectory()
     {
-        $this->filesystem->remove($this->workingDirectory);
+        $this->filesystem->remove($this->files);
+        $this->files = [];
     }
 
     /**
@@ -179,10 +195,9 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function iHaveTheConfiguration(PyStringNode $config)
     {
-        $this->filesystem->dumpFile(
-            $this->workingDirectory.'/behat.yml',
-            $config->getRaw()
-        );
+        $file = $this->workingDirectory.'/behat.yml';
+        $this->filesystem->dumpFile($file, $config->getRaw());
+        $this->files[] = $file;
     }
 
     /**
@@ -190,21 +205,19 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function iHaveTheFeature(PyStringNode $content)
     {
-        $this->filesystem->dumpFile(
-            $this->workingDirectory.'/features/feature.feature',
-            $content->getRaw()
-        );
+        $file = $this->workingDirectory . '/features/feature.feature';
+        $this->filesystem->dumpFile($file, $content->getRaw());
+        $this->files[] = $file;
     }
-    
+
     /**
      * @Given I have the context:
      */
     public function iHaveTheContext(PyStringNode $definition)
     {
-        $this->filesystem->dumpFile(
-            $this->workingDirectory.'/features/bootstrap/FeatureContext.php',
-            $definition->getRaw()
-        );
+        $file = $this->workingDirectory.'/features/bootstrap/FeatureContext.php';
+        $this->filesystem->dumpFile($file, $definition->getRaw());
+        $this->files[] = $file;
     }
 
     /**
@@ -223,7 +236,9 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function iHaveTheFileInDocumentRoot($filename, PyStringNode $content)
     {
-        $this->filesystem->dumpFile($this->documentRoot .'/'. $filename, $content);
+        $file = $this->documentRoot .'/'. $filename;
+        $this->filesystem->dumpFile($file, $content);
+        $this->files[] = $file;
     }
 
     /**

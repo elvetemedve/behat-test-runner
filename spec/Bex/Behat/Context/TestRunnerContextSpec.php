@@ -23,7 +23,7 @@ class TestRunnerContextSpec extends ObjectBehavior
 {
     function let(Filesystem $filesystem, ProcessFactory $processFactory, Process $behatProcess)
     {
-        $this->beConstructedWith('bin/phantomjs', $filesystem, $processFactory);
+        $this->beConstructedWith('bin/phantomjs', null, $filesystem, $processFactory);
         $this->initFilesystemDouble($filesystem);
         $this->initProcessFactoryDouble($processFactory, $behatProcess);
 
@@ -47,16 +47,6 @@ class TestRunnerContextSpec extends ObjectBehavior
         $filesystem->mkdir(Argument::containingString($tempDir), 0770)->shouldBeCalled();
 
         $this->createWorkingDirectory();
-    }
-
-    function it_removes_temporary_working_directory(Filesystem $filesystem)
-    {
-        $tempDir = sys_get_temp_dir() .'/behat-test-runner';
-
-        $filesystem->remove(Argument::containingString($tempDir))->shouldBeCalled();
-
-        $this->createWorkingDirectory();
-        $this->clearWorkingDirectory();
     }
 
     function it_saves_behat_configuration(PyStringNode $config, Filesystem $filesystem)
@@ -152,7 +142,7 @@ class TestRunnerContextSpec extends ObjectBehavior
             Argument::any()
         )->willReturn($browserProcess);
 
-        $this->beConstructedWith(null, $filesystem, $processFactory);
+        $this->beConstructedWith(null, null, $filesystem, $processFactory);
 
         $webServerProcess->start()->shouldBeCalled();
         $browserProcess->start()->shouldNotBeCalled();
@@ -187,6 +177,7 @@ class TestRunnerContextSpec extends ObjectBehavior
     {
         $filesystem->remove(Argument::type('string'))->willReturn(null);
         $filesystem->mkdir(Argument::type('string'), Argument::type('int'))->willReturn(null);
+        $filesystem->exists(Argument::type('string'))->willReturn(false);
     }
 
     private function initProcessFactoryDouble(ProcessFactory $processFactory, Process $behatProcess)

@@ -60,28 +60,28 @@ use Symfony\Component\Process\Process;
 class TestRunnerContext implements SnippetAcceptingContext
 {
     /** @var Filesystem $filesystem */
-    private $filesystem;
+    protected $filesystem;
 
     /** @var string $workingDirectory Place for generated tests */
-    private $workingDirectory;
+    protected $workingDirectory;
 
     /** @var string $documentRoot Root directory of the web server */
-    private $documentRoot;
+    protected $documentRoot;
 
     /** @var Process[] $processes Active processes */
-    private $processes = [];
+    protected $processes = [];
 
     /** @var Process $behatProcess Active behat process */
-    private $behatProcess;
+    protected $behatProcess;
 
     /** @var string $browserCommand */
-    private $browserCommand;
+    protected $browserCommand;
 
     /** @var ProcessFactory $processFactory */
-    private $processFactory;
+    protected $processFactory;
 
     /** @var string[] List of created files */
-    private $files = [];
+    protected $files = [];
 
     /**
      * TestRunnerContext constructor.

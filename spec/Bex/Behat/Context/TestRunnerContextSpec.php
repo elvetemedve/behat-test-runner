@@ -23,7 +23,7 @@ class TestRunnerContextSpec extends ObjectBehavior
 {
     function let(Filesystem $filesystem, ProcessFactory $processFactory, Process $behatProcess)
     {
-        $this->beConstructedWith('bin/phantomjs', null, $filesystem, $processFactory);
+        $this->beConstructedWith('bin/phantomjs', $filesystem, $processFactory, null);
         $this->initFilesystemDouble($filesystem);
         $this->initProcessFactoryDouble($processFactory, $behatProcess);
 
@@ -152,7 +152,7 @@ class TestRunnerContextSpec extends ObjectBehavior
             Argument::any()
         )->willReturn($browserProcess);
 
-        $this->beConstructedWith(null, null, $filesystem, $processFactory);
+        $this->beConstructedWith(null, $filesystem, $processFactory, null);
 
         $webServerProcess->start()->shouldBeCalled();
         $browserProcess->start()->shouldNotBeCalled();

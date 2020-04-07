@@ -132,6 +132,7 @@ class TestRunnerContext implements SnippetAcceptingContext
     {
         if (empty($this->workingDirectory)) {
             $this->workingDirectory = tempnam(sys_get_temp_dir(), 'behat-test-runner');
+            $this->filesystem->remove($this->workingDirectory);
         }
 
         $featuresDirectory = $this->workingDirectory . '/features/bootstrap';

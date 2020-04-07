@@ -180,7 +180,7 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function printTesterOutputOnFailure($scope)
     {
-        if (!$scope->getTestResult()->isPassed()) {
+        if ($this->behatProcess !== null && !$scope->getTestResult()->isPassed()) {
             $outputFile = sys_get_temp_dir() . '/behat-test-runner.out';
             $this->filesystem->dumpFile(
                 $outputFile,

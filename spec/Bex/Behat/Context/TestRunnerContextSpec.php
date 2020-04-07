@@ -49,6 +49,16 @@ class TestRunnerContextSpec extends ObjectBehavior
         $this->createWorkingDirectory();
     }
 
+    function it_removes_temporary_working_directory(Filesystem $filesystem)
+    {
+        $tempDir = sys_get_temp_dir() .'/behat-test-runner';
+        
+        $filesystem->remove(Argument::containingString($tempDir))->shouldBeCalled();
+
+        $this->createWorkingDirectory();
+        $this->clearWorkingDirectory();
+    }
+
     function it_saves_behat_configuration(PyStringNode $config, Filesystem $filesystem)
     {
         $config->getRaw()->willReturn('default:');

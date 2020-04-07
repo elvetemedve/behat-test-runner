@@ -103,6 +103,11 @@ class TestRunnerContext implements SnippetAcceptingContext
         $this->processFactory = $processFactory ?: new ProcessFactory();
     }
 
+    public function __destruct()
+    {
+        $this->clearWorkingDirectory();
+    }
+
     /**
      * @BeforeScenario
      */

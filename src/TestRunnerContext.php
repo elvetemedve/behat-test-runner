@@ -143,7 +143,7 @@ class TestRunnerContext implements SnippetAcceptingContext
 
         $this->documentRoot = $this->workingDirectory .'/document_root';
 
-        if (!$this->filesystem->exists($featuresDirectory)) {
+        if (!$this->filesystem->exists($this->documentRoot)) {
             $this->filesystem->mkdir($this->documentRoot, 0770);
         }
     }

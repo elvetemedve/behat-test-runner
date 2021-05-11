@@ -1,6 +1,6 @@
 Behat Test Runner
 =========================
-![Build Status](https://github.com/github/docs/actions/workflows/ci.yml/badge.svg)
+![Build Status](https://github.com/elvetemedve/behat-test-runner/actions/workflows/ci.yml/badge.svg)
 
 Behat Test Runner is essentially a Behat context class which provides steps for testing a Behat extension.
 You can put together a feature file and behat.yml configuration, than the test runner will start a second

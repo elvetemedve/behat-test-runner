@@ -7,7 +7,7 @@ on:
       - "master"
 
 jobs:
-  coding-standards:
+  tests:
     name: "Run Tests"
 
     runs-on: "ubuntu-latest"

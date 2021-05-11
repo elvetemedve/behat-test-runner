@@ -1,8 +1,6 @@
 Behat Test Runner
 =========================
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/elvetemedve/behat-test-runner/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/elvetemedve/behat-test-runner/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/elvetemedve/behat-test-runner/badges/build.png?b=master)](https://scrutinizer-ci.com/g/elvetemedve/behat-test-runner/build-status/master)
-[![Build Status](https://travis-ci.org/elvetemedve/behat-test-runner.svg?branch=master)](https://travis-ci.org/elvetemedve/behat-test-runner)
+![Build Status](https://github.com/elvetemedve/behat-test-runner/actions/workflows/ci.yml/badge.svg)
 
 Behat Test Runner is essentially a Behat context class which provides steps for testing a Behat extension.
 You can put together a feature file and behat.yml configuration, than the test runner will start a second

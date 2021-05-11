@@ -27,7 +27,7 @@ class ProcessFactory
      * @param string $workingDirectory
      * @param string $parameters
      * @param string $phpParameters PHP CLI arguments @link http://php.net/manual/en/features.commandline.options.php
-     * 
+     *
      * @return Process
      */
     public function createBehatProcess($workingDirectory, $parameters = '', $phpParameters = '')

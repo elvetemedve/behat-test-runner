@@ -124,7 +124,7 @@ class TestRunnerContext implements SnippetAcceptingContext
         $this->destroyProcesses();
         $this->printTesterOutputOnFailure($scope);
     }
-    
+
     /**
      * @return void
      */
@@ -141,13 +141,13 @@ class TestRunnerContext implements SnippetAcceptingContext
             $this->filesystem->mkdir($this->workingDirectory . '/features/bootstrap', 0770);
         }
 
-        $this->documentRoot = $this->workingDirectory .'/document_root';
+        $this->documentRoot = $this->workingDirectory . '/document_root';
 
         if (!$this->filesystem->exists($this->documentRoot)) {
             $this->filesystem->mkdir($this->documentRoot, 0770);
         }
     }
-    
+
     /**
      * @return string
      */
@@ -205,7 +205,7 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function iHaveTheConfiguration(PyStringNode $config)
     {
-        $file = $this->workingDirectory.'/behat.yml';
+        $file = $this->workingDirectory . '/behat.yml';
         $this->filesystem->dumpFile($file, $config->getRaw());
         $this->files[] = $file;
     }
@@ -225,7 +225,7 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function iHaveTheContext(PyStringNode $definition)
     {
-        $file = $this->workingDirectory.'/features/bootstrap/FeatureContext.php';
+        $file = $this->workingDirectory . '/features/bootstrap/FeatureContext.php';
         $this->filesystem->dumpFile($file, $definition->getRaw());
         $this->files[] = $file;
     }
@@ -246,7 +246,7 @@ class TestRunnerContext implements SnippetAcceptingContext
      */
     public function iHaveTheFileInDocumentRoot($filename, PyStringNode $content)
     {
-        $file = $this->documentRoot .'/'. $filename;
+        $file = $this->documentRoot . '/' . $filename;
         $this->filesystem->dumpFile($file, $content);
         $this->files[] = $file;
     }

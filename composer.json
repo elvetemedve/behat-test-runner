@@ -16,7 +16,7 @@
     "require": {
         "php" : ">=5.4",
         "behat/behat": "^3.0.0",
-        "symfony/process": "^2.7.0|^4.4"
+        "symfony/process": "^2.7.0|^4.4|^5.0"
     },
     "require-dev": {
         "phpspec/phpspec": "2.4.0-alpha2",

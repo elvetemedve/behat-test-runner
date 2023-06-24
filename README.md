@@ -1,6 +1,6 @@
 Behat Test Runner
 =========================
-![Build Status](https://github.com/elvetemedve/behat-test-runner/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/nopenopenope/behat-test-runner/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/nopenopenope/behat-test-runner/actions/workflows/ci.yml)
 
 Behat Test Runner is essentially a Behat context class which provides steps for testing a Behat extension.
 You can put together a feature file and behat.yml configuration, than the test runner will start a second
@@ -12,7 +12,7 @@ Installation
 Install by adding to your `composer.json`:
 
 ```bash
-composer require --dev bex/behat-test-runner
+composer require --dev seec/behat-test-runner
 ```
 
 Configuration

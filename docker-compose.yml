@@ -13,6 +13,18 @@ services:
       - ./tests:/var/www/html/tests
       - ./composer.json:/var/www/html/composer.json
 
+  php7.3:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        XDEBUG_VERSION: xdebug-3.1.5
+        PHP_VERSION: php:7.3.33-zts-alpine3.14
+    volumes:
+      - ./src:/var/www/html/src
+      - ./tests:/var/www/html/tests
+      - ./composer.json:/var/www/html/composer.json
+
   php7.4:
     build:
       context: .

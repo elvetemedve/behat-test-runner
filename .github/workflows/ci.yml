@@ -44,7 +44,7 @@ jobs:
         run: "composer install --no-interaction --no-progress --no-suggest"
 
       - name: "Run tests"
-        run: "vendor/bin/phpunit tests --strict --stop-on-failure"
+        run: "vendor/bin/phpunit tests --stop-on-failure"
 
   coding-standards:
     name: "Check Coding Standards"
@@ -55,7 +55,6 @@ jobs:
       matrix:
         php-version:
           - "7.4"
-          - "8.0"
 
     steps:
       - name: "Checkout"

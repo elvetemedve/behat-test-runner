@@ -1,0 +1,83 @@
+version: '3.9'
+
+services:
+  php7.2:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        XDEBUG_VERSION: xdebug-3.1.5
+        PHP_VERSION: php:7.2.34-zts-alpine3.12
+    volumes:
+        - ./src:/var/www/html/src
+        - ./tests:/var/www/html/tests
+        - ./composer.json:/var/www/html/composer.json
+
+  php7.4:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        XDEBUG_VERSION: xdebug-3.1.5
+        PHP_VERSION: php:7.4.33-zts-alpine3.16
+    volumes:
+      - ./src:/var/www/html/src
+      - ./tests:/var/www/html/tests
+      - ./composer.json:/var/www/html/composer.json
+
+  php8.0:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        PHP_VERSION: php:8.0.29-zts-alpine3.16
+    volumes:
+      - ./src:/var/www/html/src
+      - ./tests:/var/www/html/tests
+      - ./composer.json:/var/www/html/composer.json
+
+  php8.1:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        PHP_VERSION: php:8.1.20-zts-alpine3.18
+    volumes:
+      - ./src:/var/www/html/src
+      - ./tests:/var/www/html/tests
+      - ./composer.json:/var/www/html/composer.json
+
+  php8.2:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        PHP_VERSION: php:8.2.7-zts-alpine3.18
+    volumes:
+      - ./src:/var/www/html/src
+      - ./tests:/var/www/html/tests
+      - ./composer.json:/var/www/html/composer.json
+
+  php-dev:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      args:
+        PHP_VERSION: php:8.2.7-zts-alpine3.18
+        COMMAND: tail -F /var/log/php-fpm.log
+    volumes:
+      - ./src:/var/www/html/src
+      - ./tests:/var/www/html/tests
+      - ./vendor:/var/www/html/vendor
+      - ./composer.json:/var/www/html/composer.json
+
+#  php8.3:
+#    build:
+#      context: .
+#      dockerfile: ./docker/php/Dockerfile
+#      args:
+#        PHP_VERSION: php:8.3.0alpha1-zts-alpine3.18
+#    volumes:
+#      - ./src:/var/www/html/src
+#      - ./tests:/var/www/html/tests
+#      - ./composer.json:/var/www/html/composer.json

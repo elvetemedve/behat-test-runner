@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
-echo "Test worked.."
-php vendor/bin/phpunit tests
-php vendor/bin/phpcs --standard=PSR12 -q --report=checkstyle /var/www/html/src
+php vendor/bin/phpunit tests/
+php vendor/bin/ecs check src/
+php vendor/bin/ecs check tests/
+php vendor/bin/phpstan analyse src --level=8
+php vendor/bin/phpstan analyse tests --level=5

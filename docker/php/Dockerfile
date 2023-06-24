@@ -1,9 +1,7 @@
 ARG PHP_VERSION=8.0.11
 ARG XDEBUG_VERSION=xdebug
-ARG COMMAND=composer-test
 FROM $PHP_VERSION
 ARG XDEBUG_VERSION
-ARG COMMAND
 
 WORKDIR /var/www/html/
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -22,6 +20,9 @@ RUN apk add -u \
 COPY ./composer.json /var/www/html/composer.json
 COPY ./src /var/www/html/src
 COPY ./tests /var/www/html/tests
+COPY ./ecs.php /var/www/html/ecs.php
+COPY ./phpstan.neon /var/www/html/phpstan.neon
+
 COPY ./docker/php/test.sh /usr/bin/composer-test
 RUN chmod +x /usr/bin/composer-test
 
@@ -29,6 +30,5 @@ RUN pecl install $XDEBUG_VERSION && docker-php-ext-enable xdebug
 COPY ./docker/php/999-php-custom.ini /usr/local/etc/php/conf.d/999-php-custom.ini
 
 RUN composer install --no-interaction --no-progress --optimize-autoloader
-ENV CMD_COMMAND=${COMMAND}
 
-CMD $CMD_COMMAND
+CMD ["composer-test"]

@@ -80,5 +80,14 @@ jobs:
       - name: "Install dependencies"
         run: "composer install --no-interaction --no-progress --no-suggest"
 
-      - name: "Coding Standard"
-        run: "vendor/bin/phpcs --standard=PSR12 -q --report=checkstyle src | cs2pr"
+      - name: "EasyCodingStandards for Src"
+        run: "vendor/bin/ecs check src --no-interaction --no-progress-bar"
+
+      - name: "EasyCodingStandards for Tests"
+        run: "vendor/bin/ecs check tests --no-interaction --no-progress-bar"
+
+      - name: "PhpStan for Src"
+        run: "vendor/bin/phpstan analyse --error-format=checkstyle src --level=8 | cs2pr"
+
+      - name: "PhpStan for Test"
+        run: "vendor/bin/phpstan analyse --error-format=checkstyle tests --level=5 | cs2pr"

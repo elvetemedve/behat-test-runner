@@ -9,9 +9,9 @@ services:
         XDEBUG_VERSION: xdebug-3.1.5
         PHP_VERSION: php:7.2.34-zts-alpine3.12
     volumes:
-        - ./src:/var/www/html/src
-        - ./tests:/var/www/html/tests
-        - ./composer.json:/var/www/html/composer.json
+      - ./src:/var/www/html/src
+      - ./tests:/var/www/html/tests
+      - ./composer.json:/var/www/html/composer.json
 
   php7.4:
     build:
@@ -64,7 +64,7 @@ services:
       dockerfile: ./docker/php/Dockerfile
       args:
         PHP_VERSION: php:8.2.7-zts-alpine3.18
-        COMMAND: tail -F /var/log/php-fpm.log
+    command: "tail -F /var/www/html/php_error.log"
     volumes:
       - ./src:/var/www/html/src
       - ./tests:/var/www/html/tests

@@ -29,7 +29,7 @@ final class TestRunnerContextTest extends TestCase
     public function setUp(): void
     {
         $this->processFactory = $this->createMock(ProcessFactoryInterface::class);
-        $this->fileSystem = new Filesystem();
+        $this->fileSystem = $this->createMock(Filesystem::class);
         $this->testRunnerContext = new TestRunnerContext(
             'bin/phantomjs',
             $this->fileSystem,
@@ -175,29 +175,38 @@ final class TestRunnerContextTest extends TestCase
     public function test_it_can_create_configuration_files_correctly(): void
     {
         $mockConfig = new PyStringNode(['test'], 1);
+        $this->fileSystem->expects($this->once())
+            ->method('dumpFile')
+            ->with('/var/www/html/test/behat.yml', 'test');
         $this->testRunnerContext->iHaveTheConfiguration($mockConfig);
-        $this->assertFileExists('/var/www/html/test/behat.yml');
     }
 
     public function test_it_can_create_feature_files_correctly(): void
     {
         $mockConfig = new PyStringNode(['test'], 1);
+
+        $this->fileSystem->expects($this->once())
+            ->method('dumpFile')
+            ->with('/var/www/html/test/features/feature.feature', 'test');
         $this->testRunnerContext->iHaveTheFeature($mockConfig);
-        $this->assertFileExists('/var/www/html/test/features/feature.feature');
     }
 
     public function test_it_can_create_context_files_correctly(): void
     {
         $mockConfig = new PyStringNode(['test'], 1);
+        $this->fileSystem->expects($this->once())
+            ->method('dumpFile')
+            ->with('/var/www/html/test/features/bootstrap/FeatureContext.php', 'test');
         $this->testRunnerContext->iHaveTheContext($mockConfig);
-        $this->assertFileExists('/var/www/html/test/features/bootstrap/FeatureContext.php');
     }
 
     public function test_it_can_create_files_in_document_root(): void
     {
         $mockConfig = new PyStringNode(['test'], 1);
+        $this->fileSystem->expects($this->once())
+            ->method('dumpFile')
+            ->with('/test.log', 'test');
         $this->testRunnerContext->iHaveTheFileInDocumentRoot('test.log', $mockConfig);
-        $this->assertFileExists('/test.log');
     }
 
     public function test_it_can_successfully_create_and_start_webserver(): void

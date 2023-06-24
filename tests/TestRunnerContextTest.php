@@ -265,7 +265,7 @@ final class TestRunnerContextTest extends TestCase
     {
         $this->testRunnerContext = new TestRunnerContext(
             null,
-            null,
+            $this->fileSystem,
             $this->processFactory,
             '/var/www/html/test'
         );

@@ -15,12 +15,10 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "5.6"
-          - "7.0"
-          - "7.1"
           - "7.2"
-          - "7.3"
           - "7.4"
+          - "8.0"
+          - "8.2"
 
     steps:
       - name: "Checkout"
@@ -46,7 +44,7 @@ jobs:
         run: "composer install --no-interaction --no-progress --no-suggest"
 
       - name: "Run tests"
-        run: "vendor/bin/phpspec run --no-interaction --format=pretty"
+        run: "vendor/bin/phpunit tests --stop-on-failure"
 
   coding-standards:
     name: "Check Coding Standards"
@@ -81,5 +79,14 @@ jobs:
       - name: "Install dependencies"
         run: "composer install --no-interaction --no-progress --no-suggest"
 
-      - name: "Coding Standard"
-        run: "vendor/bin/phpcs --standard=PSR12 -q --report=checkstyle src | cs2pr"
+      - name: "EasyCodingStandards for Src"
+        run: "vendor/bin/ecs check src --no-interaction --no-progress-bar"
+
+      - name: "EasyCodingStandards for Tests"
+        run: "vendor/bin/ecs check tests --no-interaction --no-progress-bar"
+
+      - name: "PhpStan for Src"
+        run: "vendor/bin/phpstan analyse --error-format=checkstyle src --level=8 | cs2pr"
+
+      - name: "PhpStan for Test"
+        run: "vendor/bin/phpstan analyse --error-format=checkstyle tests --level=5 | cs2pr"

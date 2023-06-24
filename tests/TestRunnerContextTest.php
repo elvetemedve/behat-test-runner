@@ -62,14 +62,20 @@ final class TestRunnerContextTest extends TestCase
     {
         $this->test_it_creates_the_working_directory();
 
-        $this->testRunnerContext->createFile('test1.log', 'test1');
-        $this->testRunnerContext->createFile('test2.log', 'test2');
+        $this->fileSystem->expects($this->exactly(2))
+            ->method('dumpFile')
+            ->with(...$this->consecutiveParams(
+                ['/var/www/html/test/test1.log', 'test1'],
+                ['/var/www/html/test/test2.log', 'test2']
+            ));
+        $this->fileSystem->expects($this->once())
+            ->method('remove')
+            ->with(['/var/www/html/test/test1.log', '/var/www/html/test/test2.log', ]);
+
+        $this->testRunnerContext->createFile('/var/www/html/test/test1.log', 'test1');
+        $this->testRunnerContext->createFile('/var/www/html/test/test2.log', 'test2');
 
         $this->testRunnerContext->clearWorkingDirectory();
-
-        $this->assertDirectoryExists($this->testRunnerContext->getWorkingDirectory());
-        $resolve = glob($this->testRunnerContext->getWorkingDirectory() . '/*.*');
-        $this->assertEmpty($resolve);
     }
 
     public function test_it_destroys_the_processes_correctly(): void

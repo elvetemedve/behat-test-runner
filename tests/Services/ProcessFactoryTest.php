@@ -9,6 +9,10 @@ use Bex\Behat\Context\Services\ProcessFactoryInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\PhpExecutableFinder;
 
+if (defined('BEHAT_BIN_PATH') === false) {
+    define('BEHAT_BIN_PATH', 'vendor/bin/behat');
+}
+
 final class ProcessFactoryTest extends TestCase
 {
     /** @var ProcessFactoryInterface */
@@ -20,10 +24,6 @@ final class ProcessFactoryTest extends TestCase
         $phpFinder->expects($this->once())
             ->method('find')
             ->willReturn('/usr/bin/php');
-
-        if (defined('BEHAT_BIN_PATH') === false) {
-            define('BEHAT_BIN_PATH', 'vendor/bin/behat');
-        }
 
         $this->processFactory = new ProcessFactory($phpFinder);
     }
@@ -62,7 +62,7 @@ final class ProcessFactoryTest extends TestCase
     {
         $process = $this->processFactory->createBrowserProcess(
             'phantomjs',
-            '/var/www/html/test',
+            '/var/www/html/test'
         );
 
         $this->assertSame(

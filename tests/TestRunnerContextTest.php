@@ -17,6 +17,8 @@ use Symfony\Component\Process\Process;
 
 final class TestRunnerContextTest extends TestCase
 {
+    use ConsecutiveParams;
+
     /** @var MockObject|Filesystem */
     private $fileSystem;
 
@@ -40,11 +42,20 @@ final class TestRunnerContextTest extends TestCase
 
     public function test_it_creates_the_working_directory(): void
     {
-        $this->testRunnerContext->beforeRunTests();
+        $matcher = $this->exactly(3);
+        $this->fileSystem->expects($matcher)
+            ->method('mkdir')
+            ->with(...$this->consecutiveParams(
+                [$this->testRunnerContext->getWorkingDirectory(), 504],
+                [$this->testRunnerContext->getWorkingDirectory() . '/features/bootstrap', 504],
+                [$this->testRunnerContext->getWorkingDirectory() . '/document_root', 504]
+            ));
 
-        $this->assertNotEmpty($this->testRunnerContext->getWorkingDirectory());
-        $this->assertDirectoryExists($this->testRunnerContext->getWorkingDirectory() . '/features/bootstrap');
-        $this->assertDirectoryExists($this->testRunnerContext->getWorkingDirectory() . '/document_root');
+        $this->testRunnerContext->beforeRunTests();
+        $resolve = $this->testRunnerContext->getWorkingDirectory();
+        $this->assertIsString($resolve);
+        $this->assertNotNull($resolve);
+        $this->assertNotEmpty($resolve);
     }
 
     public function test_it_fills_and_cleans_the_working_directory_correctly(): void

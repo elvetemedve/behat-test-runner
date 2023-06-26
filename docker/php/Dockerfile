@@ -22,6 +22,8 @@ COPY ./src /var/www/html/src
 COPY ./tests /var/www/html/tests
 COPY ./ecs.php /var/www/html/ecs.php
 COPY ./phpstan.neon /var/www/html/phpstan.neon
+COPY ./features /var/www/html/features
+COPY ./behat.yml /var/www/html/behat.yml
 
 COPY ./docker/php/test.sh /usr/bin/composer-test
 RUN chmod +x /usr/bin/composer-test

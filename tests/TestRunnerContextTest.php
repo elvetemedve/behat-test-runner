@@ -7,11 +7,11 @@ namespace SEEC\Behat\Tests;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Testwork\Hook\Scope\AfterTestScope;
 use Behat\Testwork\Tester\Result\TestResult;
-use Bex\Behat\Context\Services\ProcessFactoryInterface;
-use Bex\Behat\Context\TestRunnerContext;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use SEEC\Behat\Context\Services\ProcessFactoryInterface;
+use SEEC\Behat\Context\TestRunnerContext;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
@@ -19,21 +19,19 @@ final class TestRunnerContextTest extends TestCase
 {
     use ConsecutiveParams;
 
-    /** @var MockObject|Filesystem */
-    private $fileSystem;
+    /** @var object|MockObject|Filesystem */
+    private object $fileSystem;
 
-    /** @var MockObject|ProcessFactoryInterface */
-    private $processFactory;
+    /** @var object|MockObject|ProcessFactoryInterface */
+    private object $processFactory;
 
-    /** @var TestRunnerContext */
-    private $testRunnerContext;
+    private TestRunnerContext $testRunnerContext;
 
     public function setUp(): void
     {
         $this->processFactory = $this->createMock(ProcessFactoryInterface::class);
         $this->fileSystem = $this->createMock(Filesystem::class);
         $this->testRunnerContext = new TestRunnerContext(
-            'bin/phantomjs',
             $this->fileSystem,
             $this->processFactory,
             '/var/www/html/test'
@@ -228,21 +226,16 @@ final class TestRunnerContextTest extends TestCase
 
     public function test_it_can_successfully_create_and_start_webserver(): void
     {
-        $mockProcess1 = $this->createMock(Process::class);
+        $mockProcess = $this->createMock(Process::class);
         $this->processFactory->expects($this->once())
             ->method('createWebServerProcess')
             ->with('/var/www/html/test/document_root', '', '')
-            ->willReturn($mockProcess1);
-        $mockProcess1->expects($this->once())
+            ->willReturn($mockProcess);
+        $mockProcess->expects($this->once())
             ->method('start');
-
-        $mockProcess2 = $this->createMock(Process::class);
-        $this->processFactory->expects($this->once())
-            ->method('createBrowserProcess')
-            ->with('bin/phantomjs', '/var/www/html/test')
-            ->willReturn($mockProcess2);
-        $mockProcess2->expects($this->once())
-            ->method('start');
+        $mockProcess->expects($this->once())
+            ->method('isRunning')
+            ->willReturn(true);
 
         $this->testRunnerContext->iHaveAWebServerRunningOnAddressAndPort('', '');
     }
@@ -250,36 +243,15 @@ final class TestRunnerContextTest extends TestCase
     public function test_it_will_use_behat_test_runner_directory_properly(): void
     {
         $this->testRunnerContext = new TestRunnerContext(
-            'bin/phantomjs',
             $this->fileSystem,
-            $this->processFactory
+            $this->processFactory,
+            null
         );
 
         $this->fileSystem->remove('/var/www/html/test/*');
         $this->testRunnerContext->createWorkingDirectory();
         $resolve = $this->testRunnerContext->getWorkingDirectory();
         $this->assertStringStartsWith('/tmp/behat-test-runner', $resolve);
-    }
-
-    public function test_it_can_successfully_create_webserver_but_not_utilize_browser(): void
-    {
-        $this->testRunnerContext = new TestRunnerContext(
-            null,
-            $this->fileSystem,
-            $this->processFactory,
-            '/var/www/html/test'
-        );
-
-        $mockProcess = $this->createMock(Process::class);
-        $this->processFactory->expects($this->once())
-            ->method('createWebServerProcess')
-            ->with('/var/www/html/test/document_root', '', '')
-            ->willReturn($mockProcess);
-
-        $mockProcess->expects($this->once())->method('start');
-        $this->processFactory->expects($this->never())->method('createBrowserProcess');
-
-        $this->testRunnerContext->iHaveAWebServerRunningOnAddressAndPort('', '');
     }
 
     public function tearDown(): void

@@ -1,0 +1,9 @@
+default:
+  gherkin:
+    filters:
+      tags: ~@php8
+
+  suites:
+    default:
+      contexts:
+        - SEEC\Behat\Context\TestRunnerContext:

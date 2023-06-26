@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bex\Behat\Context\Services;
+namespace SEEC\Behat\Context\Services;
 
 use Symfony\Component\Process\Process;
 
@@ -15,6 +15,4 @@ interface ProcessFactoryInterface
     ): Process;
 
     public function createWebServerProcess(string $documentRoot, string $hostname, string $port): Process;
-
-    public function createBrowserProcess(string $browserCommand, string $workingDirectory): Process;
 }

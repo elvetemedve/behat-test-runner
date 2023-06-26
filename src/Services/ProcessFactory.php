@@ -2,19 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Bex\Behat\Context\Services;
+namespace SEEC\Behat\Context\Services;
 
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
 use Webmozart\Assert\Assert;
 
-if (defined('BEHAT_BIN_PATH') === false) {
-    define('BEHAT_BIN_PATH', 'vendor/bin/behat');
-}
-
 final class ProcessFactory implements ProcessFactoryInterface
 {
-    /** @var false|string */
+    /**
+     * @var false|string
+     */
     private $phpBin;
 
     public function __construct(
@@ -31,7 +29,7 @@ final class ProcessFactory implements ProcessFactoryInterface
         Assert::notFalse($this->phpBin, 'Cannot find php executable, abort');
 
         return new Process(
-            [sprintf('%s %s %s %s', $this->phpBin, $phpParameters, escapeshellarg(BEHAT_BIN_PATH), $parameters)],
+            array_filter([$this->phpBin, $phpParameters, BEHAT_BIN_PATH, $parameters]), /** @phpstan-ignore-line */
             $workingDirectory
         );
     }
@@ -41,18 +39,8 @@ final class ProcessFactory implements ProcessFactoryInterface
         Assert::notFalse($this->phpBin, 'Cannot find php executable, abort');
 
         return new Process(
-            [sprintf('exec %s -S %s:%s -t %s', $this->phpBin, $hostname, $port, $documentRoot)],
+            array_filter([$this->phpBin, '-S', sprintf('%s:%s', $hostname, $port), '-t', $documentRoot]),
             $documentRoot
-        );
-    }
-
-    public function createBrowserProcess(
-        string $browserCommand,
-        string $workingDirectory
-    ): Process {
-        return new Process(
-            [sprintf('exec %s', escapeshellcmd($browserCommand))],
-            $workingDirectory
         );
     }
 }

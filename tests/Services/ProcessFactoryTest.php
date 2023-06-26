@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SEEC\Behat\Tests\Services;
 
-use Bex\Behat\Context\Services\ProcessFactory;
-use Bex\Behat\Context\Services\ProcessFactoryInterface;
 use PHPUnit\Framework\TestCase;
+use SEEC\Behat\Context\Services\ProcessFactory;
+use SEEC\Behat\Context\Services\ProcessFactoryInterface;
 use Symfony\Component\Process\PhpExecutableFinder;
 
 if (defined('BEHAT_BIN_PATH') === false) {
@@ -37,7 +37,7 @@ final class ProcessFactoryTest extends TestCase
         );
 
         $this->assertSame(
-            "'/usr/bin/php some-php-parameters '\''vendor/bin/behat'\'' features/bootstrap'",
+            "'/usr/bin/php' 'some-php-parameters' 'vendor/bin/behat' 'features/bootstrap'",
             $process->getCommandLine()
         );
         $this->assertSame('/var/www/html/test', $process->getWorkingDirectory());
@@ -52,21 +52,7 @@ final class ProcessFactoryTest extends TestCase
         );
 
         $this->assertSame(
-            "'exec /usr/bin/php -S localhost:8080 -t /var/www/html/test'",
-            $process->getCommandLine()
-        );
-        $this->assertSame('/var/www/html/test', $process->getWorkingDirectory());
-    }
-
-    public function test_it_can_create_browser_process_as_expected(): void
-    {
-        $process = $this->processFactory->createBrowserProcess(
-            'phantomjs',
-            '/var/www/html/test'
-        );
-
-        $this->assertSame(
-            "'exec phantomjs'",
+            "'/usr/bin/php' '-S' 'localhost:8080' '-t' '/var/www/html/test'",
             $process->getCommandLine()
         );
         $this->assertSame('/var/www/html/test', $process->getWorkingDirectory());

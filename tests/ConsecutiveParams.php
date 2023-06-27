@@ -4,50 +4,46 @@ declare(strict_types=1);
 
 namespace SEEC\Behat\Tests;
 
+use function array_column;
+use function count;
+use PHPUnit\Framework\Constraint\Callback;
+use PHPUnit\Framework\Constraint\Constraint;
+
 trait ConsecutiveParams
 {
-    // @see: https://stackoverflow.com/questions/75389000/replace-phpunit-method-withconsecutive
-    // @see: https://stackoverflow.com/questions/21861825/quick-way-to-find-the-largest-array-in-a-multidimensional-array
-    public function consecutiveParams(array ...$args): array
+    public static function withConsecutive(array $firstCallArguments, array ...$consecutiveCallsArguments): iterable
     {
-        $callbacks = [];
-        $count = count(max($args));
-
-        for ($index = 0; $index < $count; ++$index) {
-            $returns = [];
-
-            foreach ($args as $arg) {
-                if (!array_is_list($arg)) {
-                    throw new \InvalidArgumentException('Every array must be a list');
-                }
-
-                if (!isset($arg[$index])) {
-                    throw new \InvalidArgumentException(sprintf('Every array must contain %d parameters', $count));
-                }
-
-                $returns[] = $arg[$index];
-            }
-
-            $callbacks[] = $this->callback(new class($returns) {
-                /** @var array */
-                protected $returns = [];
-
-                public function __construct(array $returns)
-                {
-                    $this->returns = $returns;
-                }
-
-                public function __invoke($actual): bool
-                {
-                    if (count($this->returns) === 0) {
-                        return true;
-                    }
-
-                    return $actual === array_shift($this->returns);
-                }
-            });
+        foreach ($consecutiveCallsArguments as $consecutiveCallArguments) {
+            self::assertSameSize($firstCallArguments, $consecutiveCallArguments, 'Each expected arguments list need to have the same size.');
         }
 
-        return $callbacks;
+        $allConsecutiveCallsArguments = [$firstCallArguments, ...$consecutiveCallsArguments];
+
+        $numberOfArguments = count($firstCallArguments);
+        $argumentList = [];
+        for ($argumentPosition = 0; $argumentPosition < $numberOfArguments; ++$argumentPosition) {
+            $argumentList[$argumentPosition] = array_column($allConsecutiveCallsArguments, $argumentPosition);
+        }
+
+        $mockedMethodCall = 0;
+        $callbackCall = 0;
+        foreach ($argumentList as $index => $argument) {
+            yield new Callback(
+                static function ($actualArgument) use ($argumentList, &$mockedMethodCall, &$callbackCall, $index, $numberOfArguments): bool {
+                    $expected = $argumentList[$index][$mockedMethodCall] ?? null;
+
+                    ++$callbackCall;
+                    $mockedMethodCall = (int) ($callbackCall / $numberOfArguments);
+
+                    if ($expected instanceof Constraint) {
+                        self::assertThat($actualArgument, $expected);
+                    } else {
+                        self::assertEquals($expected, $actualArgument);
+                    }
+
+                    return true;
+                },
+            );
+        }
     }
 }

@@ -11,11 +11,17 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use SEEC\Behat\Context\Services\ProcessFactoryInterface;
+use SEEC\Behat\Context\Components\ProcessFactory\Factory\ProcessFactoryInterface;
+use SEEC\Behat\Context\Components\ProcessFactory\Input\BehatInput;
+use SEEC\Behat\Context\Components\ProcessFactory\Input\WebserverInput;
 use SEEC\Behat\Context\Services\WorkingDirectoryServiceInterface;
 use SEEC\Behat\Context\TestRunnerContext;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
+
+if (defined('BEHAT_BIN_PATH') === false) {
+    define('BEHAT_BIN_PATH', 'vendor/bin/behat');
+}
 
 final class TestRunnerContextTest extends TestCase
 {
@@ -108,10 +114,12 @@ final class TestRunnerContextTest extends TestCase
             ->method('getWorkingDirectory')
             ->willReturn($basePath);
         $process = $this->createMock(Process::class);
+        $input = new BehatInput('', '', $basePath);
         $this->processFactory->expects($this->once())
-            ->method('createBehatProcess')
-            ->with($basePath, '', '')
+            ->method('createFromInput')
+            ->with($input)
             ->willReturn($process);
+
         $process->expects($this->once())
             ->method('run');
 
@@ -181,8 +189,8 @@ final class TestRunnerContextTest extends TestCase
 
         $mockProcess = $this->createMock(Process::class);
         $this->processFactory->expects($this->once())
-            ->method('createWebserverProcess')
-            ->with($basePath, '', '')
+            ->method('createFromInput')
+            ->with(new WebserverInput('', 0, $basePath))
             ->willReturn($mockProcess);
         $mockProcess->expects($this->once())
             ->method('start');
@@ -196,10 +204,10 @@ final class TestRunnerContextTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('test 1');
 
-        $this->testRunnerContext->iHaveAWebServerRunningOnAddressAndPort('', '');
+        $this->testRunnerContext->iHaveAWebServerRunningOnAddressAndPort('', 0);
     }
 
-    public function test_it_will_fail_when_test_was_succesfull_but_its_not_expected(): void
+    public function test_it_will_fail_when_test_was_successful_but_its_not_expected(): void
     {
         $basePath = '/var/www/html/test';
         $this->directoryService->expects($this->once())
@@ -207,8 +215,8 @@ final class TestRunnerContextTest extends TestCase
             ->willReturn($basePath);
         $process = $this->createMock(Process::class);
         $this->processFactory->expects($this->once())
-            ->method('createBehatProcess')
-            ->with($basePath, '', '')
+            ->method('createFromInput')
+            ->with(new BehatInput('', '', $basePath))
             ->willReturn($process);
         $process->expects($this->once())
             ->method('run');
@@ -232,8 +240,8 @@ final class TestRunnerContextTest extends TestCase
             ->willReturn($basePath);
         $process = $this->createMock(Process::class);
         $this->processFactory->expects($this->once())
-            ->method('createBehatProcess')
-            ->with($basePath, '', '')
+            ->method('createFromInput')
+            ->with(new BehatInput('', '', $basePath))
             ->willReturn($process);
         $process->expects($this->once())
             ->method('run');

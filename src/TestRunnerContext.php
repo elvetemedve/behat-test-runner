@@ -14,7 +14,7 @@ final class TestRunnerContext extends AbstractTestRunnerContext
      */
     public function iHaveTheConfiguration(PyStringNode $input): void
     {
-        $file = $this->getWorkingDirectory() . '/behat.yml';
+        $file = sprintf('%s/behat.yml', $this->getWorkingDirectory());
         $this->createFile($file, $input->getRaw());
     }
 
@@ -23,7 +23,7 @@ final class TestRunnerContext extends AbstractTestRunnerContext
      */
     public function iHaveTheFeature(PyStringNode $input): void
     {
-        $file = $this->getWorkingDirectory() . '/features/feature.feature';
+        $file = sprintf('%s/features/feature.feature', $this->getWorkingDirectory());
         $this->createFile($file, $input->getRaw());
     }
 
@@ -32,7 +32,7 @@ final class TestRunnerContext extends AbstractTestRunnerContext
      */
     public function iHaveTheContext(PyStringNode $input): void
     {
-        $file = $this->getWorkingDirectory() . '/features/bootstrap/FeatureContext.php';
+        $file = sprintf('%s/features/bootstrap/FeatureContext.php', $this->getWorkingDirectory());
         $this->createFile($file, $input->getRaw());
     }
 
@@ -52,14 +52,14 @@ final class TestRunnerContext extends AbstractTestRunnerContext
      */
     public function iHaveTheFileInDocumentRoot(string $filename, PyStringNode $content): void
     {
-        $file = $this->getDocumentRoot() . '/' . $filename;
+        $file = sprintf('%s/%s', $this->getDocumentRoot(), $filename);
         $this->createFile($file, $content->getRaw());
     }
 
     /**
      * @Given I have a web server running on host :hostname and port :port
      */
-    public function iHaveAWebServerRunningOnAddressAndPort(string $hostname, string $port): void
+    public function iHaveAWebServerRunningOnAddressAndPort(string $hostname, int $port): void
     {
         $this->runWebServer($hostname, $port);
     }

@@ -7,8 +7,10 @@ namespace SEEC\Behat\Context;
 use Behat\Behat\Context\Context;
 use Behat\Testwork\Hook\Scope\AfterTestScope;
 use RuntimeException;
-use SEEC\Behat\Context\Services\ProcessFactory;
-use SEEC\Behat\Context\Services\ProcessFactoryInterface;
+use SEEC\Behat\Context\Components\ProcessFactory\Factory\ProcessFactory;
+use SEEC\Behat\Context\Components\ProcessFactory\Factory\ProcessFactoryInterface;
+use SEEC\Behat\Context\Components\ProcessFactory\Input\BehatInput;
+use SEEC\Behat\Context\Components\ProcessFactory\Input\WebserverInput;
 use SEEC\Behat\Context\Services\WorkingDirectoryService;
 use SEEC\Behat\Context\Services\WorkingDirectoryServiceInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -125,17 +127,6 @@ abstract class AbstractTestRunnerContext implements Context, TestRunnerContextIn
         return $this->processes;
     }
 
-    protected function runBehat(string $parameters = '', string $phpParameters = ''): void
-    {
-        $workingDirectory = $this->getWorkingDirectory();
-        Assert::string($workingDirectory);
-
-        $process = $this->processFactory->createBehatProcess($workingDirectory, $parameters, $phpParameters);
-        $this->behatProcess = $process;
-        $this->addProcess($process);
-        $process->run();
-    }
-
     protected function getWorkingDirectory(): ?string
     {
         return $this->getDirectoryService()->getWorkingDirectory();
@@ -151,7 +142,18 @@ abstract class AbstractTestRunnerContext implements Context, TestRunnerContextIn
         return $this->behatProcess;
     }
 
-    protected function runWebServer(string $hostname, string $port): void
+    protected function runBehat(string $parameters = '', string $phpParameters = ''): void
+    {
+        $workingDirectory = $this->getWorkingDirectory();
+        Assert::string($workingDirectory);
+
+        $process = $this->processFactory->createFromInput(new BehatInput($phpParameters, $parameters, $workingDirectory));
+        $this->behatProcess = $process;
+        $this->addProcess($process);
+        $process->run();
+    }
+
+    protected function runWebServer(string $hostname, int $port): void
     {
         if ($this->getDirectoryService()->isInitialized() === false) {
             $this->createWorkingDirectory();
@@ -160,7 +162,7 @@ abstract class AbstractTestRunnerContext implements Context, TestRunnerContextIn
         $documentRoot = $this->getDocumentRoot();
         Assert::string($documentRoot);
 
-        $process = $this->processFactory->createWebServerProcess($documentRoot, $hostname, $port);
+        $process = $this->processFactory->createFromInput(new WebserverInput($hostname, $port, $documentRoot));
         $this->addProcess($process);
         $process->start();
 

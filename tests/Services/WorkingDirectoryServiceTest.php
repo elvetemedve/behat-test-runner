@@ -8,7 +8,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SEEC\Behat\Context\Services\WorkingDirectoryService;
 use SEEC\Behat\Context\Services\WorkingDirectoryServiceInterface;
-use SEEC\Behat\Tests\ConsecutiveParams;
+use SEEC\PhpUnit\Helper\ConsecutiveParams;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class WorkingDirectoryServiceTest extends TestCase

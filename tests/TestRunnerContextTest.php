@@ -16,6 +16,7 @@ use SEEC\Behat\Context\Components\ProcessFactory\Input\BehatInput;
 use SEEC\Behat\Context\Components\ProcessFactory\Input\WebserverInput;
 use SEEC\Behat\Context\Services\WorkingDirectoryServiceInterface;
 use SEEC\Behat\Context\TestRunnerContext;
+use SEEC\PhpUnit\Helper\ConsecutiveParams;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 

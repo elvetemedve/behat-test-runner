@@ -25,7 +25,8 @@
         "behat/behat": "^3.0.0",
         "symfony/process": "^4.4|^5.0",
         "webmozart/assert": "^1.11",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "seec/phpunit-consecutive-params": "dev-master"
     },
     "require-dev": {
         "behat/behat": "^3.7",

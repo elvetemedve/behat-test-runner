@@ -272,7 +272,7 @@ return static function (ECSConfig $ecsConfig): void {
     ]);
 
     $parameters = $ecsConfig->parameters();
-    $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, 600);
+    $parameters->set(Option::PARALLEL_TIMEOUT_IN_SECONDS, 120);
     $parameters->set('skip', [
         VisibilityRequiredFixer::class => ['*Spec.php'],
     ]);

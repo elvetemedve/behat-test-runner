@@ -23,7 +23,10 @@ final class ProcessFactory implements ProcessFactoryInterface
                 $input->getParameters(),
                 $input->getExtraParameters(),
             ]),
-            $input->getDirectory()
+            $input->getDirectory(),
+            null,
+            null,
+            600
         );
     }
 }

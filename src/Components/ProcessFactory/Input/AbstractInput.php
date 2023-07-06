@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SEEC\Behat\Context\Components\ProcessFactory\Input;
 
+use Webmozart\Assert\Assert;
+
 abstract class AbstractInput
 {
     private ?string $executor = null;
@@ -17,6 +19,8 @@ abstract class AbstractInput
     private ?string $directory = null;
 
     private ?string $extraParameters = null;
+
+    private int $timeout = 600;
 
     public function getExecutor(): ?string
     {
@@ -76,5 +80,16 @@ abstract class AbstractInput
     public function setExtraParameters(?string $parameters): void
     {
         $this->extraParameters = $parameters;
+    }
+
+    public function getTimeout(): int
+    {
+        return $this->timeout;
+    }
+
+    public function setTimeout(int $timeout): void
+    {
+        Assert::greaterThan($timeout, 0, 'Timeout must be greater than 0');
+        $this->timeout = $timeout;
     }
 }

@@ -30,15 +30,24 @@ final class ProcessFactoryTest extends TestCase
             'Behat Input' => [
                 new BehatInput(
                     'features/bootstrap',
-                    'some-php-parameters'
+                    'some-php-parameters',
+                    '/var/www/html/test',
+                    210
                 ),
             ],
             'Webserver Input' => [
                 new WebserverInput(
                     'localhost',
                     8080,
-                    '/var/www/html/test'
+                    '/var/www/html/test',
+                    420
                 ),
+            ],
+            'Behat Default Parameter Test Input' => [
+                new BehatInput(),
+            ],
+            'Webserver Default Parameter Test Input' => [
+                new WebserverInput(),
             ],
         ];
     }
@@ -59,5 +68,19 @@ final class ProcessFactoryTest extends TestCase
 
         $this->assertSame(implode(' ', $expectationArray), $process->getCommandLine());
         $this->assertSame($input->getDirectory(), $process->getWorkingDirectory());
+        $this->assertSame($input->getTimeout(), (int) $process->getTimeout());
+    }
+
+    public function test_it_will_throw_an_exception_when_negative_timeout_is_provided(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Timeout must be greater than 0');
+
+        $this->processFactory->createFromInput(new BehatInput(
+            'features/bootstrap',
+            'some-php-parameters',
+            '/var/www/html/test',
+            -1
+        ));
     }
 }

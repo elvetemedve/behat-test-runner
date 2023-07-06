@@ -11,7 +11,8 @@ final class WebserverInput extends AbstractInput
     public function __construct(
         string $hostname = 'localhost',
         int $port = 8080,
-        string $workingDirectory = ''
+        string $workingDirectory = '',
+        int $timeout = 600
     ) {
         $this->setExecutor((new PhpExecutableFinder())->find() ?: null);
         $this->setExecutorParameters('-S');
@@ -19,5 +20,6 @@ final class WebserverInput extends AbstractInput
         $this->setParameters('-t');
         $this->setExtraParameters($workingDirectory);
         $this->setDirectory($workingDirectory);
+        $this->setTimeout($timeout);
     }
 }

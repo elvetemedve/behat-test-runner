@@ -26,7 +26,7 @@ final class ProcessFactory implements ProcessFactoryInterface
             $input->getDirectory(),
             null,
             null,
-            600
+            $input->getTimeout()
         );
     }
 }

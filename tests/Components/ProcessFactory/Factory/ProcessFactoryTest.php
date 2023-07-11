@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SEEC\BehatTestRunner\Tests\Services;
+namespace SEEC\BehatTestRunner\Tests\Components\ProcessFactory\Factory;
 
 use PHPUnit\Framework\TestCase;
 use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Factory\ProcessFactory;

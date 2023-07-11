@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace SEEC\Behat\Context\Components\ProcessFactory\Factory;
+namespace SEEC\BehatTestRunner\Context\Components\ProcessFactory\Factory;
 
-use SEEC\Behat\Context\Components\ProcessFactory\Input\AbstractInput;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Input\AbstractInput;
 use Symfony\Component\Process\Process;
 
 interface ProcessFactoryInterface

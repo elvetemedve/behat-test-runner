@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SEEC\Behat\Context;
+namespace SEEC\BehatTestRunner\Context;
 
 use Behat\Testwork\Hook\Scope\AfterTestScope;
 

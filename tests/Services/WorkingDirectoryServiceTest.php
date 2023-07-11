@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace SEEC\Behat\Tests\Services;
+namespace SEEC\BehatTestRunner\Tests\Services;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use SEEC\Behat\Context\Services\WorkingDirectoryService;
-use SEEC\Behat\Context\Services\WorkingDirectoryServiceInterface;
+use SEEC\BehatTestRunner\Context\Services\WorkingDirectoryService;
+use SEEC\BehatTestRunner\Context\Services\WorkingDirectoryServiceInterface;
 use SEEC\PhpUnit\Helper\ConsecutiveParams;
 use Symfony\Component\Filesystem\Filesystem;
 

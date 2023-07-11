@@ -37,12 +37,12 @@
     },
     "autoload": {
         "psr-4": {
-            "SEEC\\Behat\\Context\\": "src"
+            "SEEC\\BehatTestRunner\\Context\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SEEC\\Behat\\Tests\\": "tests"
+            "SEEC\\BehatTestRunner\\Tests\\": "tests"
         }
     }
 }

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace SEEC\Behat\Tests\Services;
+namespace SEEC\BehatTestRunner\Tests\Components\ProcessFactory\Factory;
 
 use PHPUnit\Framework\TestCase;
-use SEEC\Behat\Context\Components\ProcessFactory\Factory\ProcessFactory;
-use SEEC\Behat\Context\Components\ProcessFactory\Factory\ProcessFactoryInterface;
-use SEEC\Behat\Context\Components\ProcessFactory\Input\AbstractInput;
-use SEEC\Behat\Context\Components\ProcessFactory\Input\BehatInput;
-use SEEC\Behat\Context\Components\ProcessFactory\Input\WebserverInput;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Factory\ProcessFactory;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Factory\ProcessFactoryInterface;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Input\AbstractInput;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Input\BehatInput;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Input\WebserverInput;
 
 if (defined('BEHAT_BIN_PATH') === false) {
     define('BEHAT_BIN_PATH', 'vendor/bin/behat');

@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace SEEC\Behat\Context;
+namespace SEEC\BehatTestRunner\Context;
 
 use Behat\Behat\Context\Context;
 use Behat\Testwork\Hook\Scope\AfterTestScope;
 use RuntimeException;
-use SEEC\Behat\Context\Components\ProcessFactory\Factory\ProcessFactory;
-use SEEC\Behat\Context\Components\ProcessFactory\Factory\ProcessFactoryInterface;
-use SEEC\Behat\Context\Components\ProcessFactory\Input\BehatInput;
-use SEEC\Behat\Context\Components\ProcessFactory\Input\WebserverInput;
-use SEEC\Behat\Context\Services\WorkingDirectoryService;
-use SEEC\Behat\Context\Services\WorkingDirectoryServiceInterface;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Factory\ProcessFactory;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Factory\ProcessFactoryInterface;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Input\BehatInput;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Input\WebserverInput;
+use SEEC\BehatTestRunner\Context\Services\WorkingDirectoryService;
+use SEEC\BehatTestRunner\Context\Services\WorkingDirectoryServiceInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Webmozart\Assert\Assert;

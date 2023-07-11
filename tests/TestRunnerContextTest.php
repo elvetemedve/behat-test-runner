@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SEEC\Behat\Tests;
+namespace SEEC\BehatTestRunner\Tests;
 
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Testwork\Hook\Scope\AfterTestScope;
@@ -11,11 +11,11 @@ use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use SEEC\Behat\Context\Components\ProcessFactory\Factory\ProcessFactoryInterface;
-use SEEC\Behat\Context\Components\ProcessFactory\Input\BehatInput;
-use SEEC\Behat\Context\Components\ProcessFactory\Input\WebserverInput;
-use SEEC\Behat\Context\Services\WorkingDirectoryServiceInterface;
-use SEEC\Behat\Context\TestRunnerContext;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Factory\ProcessFactoryInterface;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Input\BehatInput;
+use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Input\WebserverInput;
+use SEEC\BehatTestRunner\Context\Services\WorkingDirectoryServiceInterface;
+use SEEC\BehatTestRunner\Context\TestRunnerContext;
 use SEEC\PhpUnit\Helper\ConsecutiveParams;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SEEC\Behat\Context\Services;
+namespace SEEC\BehatTestRunner\Context\Services;
 
 interface WorkingDirectoryServiceInterface
 {

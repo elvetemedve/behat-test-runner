@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SEEC\Behat\Context\Components\ProcessFactory\Input;
+namespace SEEC\BehatTestRunner\Context\Components\ProcessFactory\Input;
 
 use Webmozart\Assert\Assert;
 

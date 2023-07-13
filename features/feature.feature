@@ -20,6 +20,7 @@ Feature: Visiting a page on the website
     And I have a web server running on host "localhost" and port "8080"
     And I have the feature:
             """
+            @test
             Feature: Test runner demo feature
               Scenario:
                 Given I open the index page
@@ -89,5 +90,5 @@ Feature: Visiting a page on the website
             """
 
   Scenario: Visiting the index.html page
-    When I run Behat
+    When I run Behat with "--tags='@test'" parameters
     Then I should not see a failing test

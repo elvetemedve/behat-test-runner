@@ -23,7 +23,7 @@ final class WorkingDirectoryService implements WorkingDirectoryServiceInterface
         ?string $workingDirectory = null,
         ?Filesystem $filesystem = null
     ) {
-        $this->workingDirectory = $workingDirectory ?? getcwd();
+        $this->workingDirectory = $workingDirectory ?? getcwd() ?: $workingDirectory;
         $this->filesystem = $filesystem ?? new Filesystem();
     }
 

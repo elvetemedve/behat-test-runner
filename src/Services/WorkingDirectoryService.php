@@ -68,7 +68,7 @@ final class WorkingDirectoryService implements WorkingDirectoryServiceInterface
         Assert::notNull($workingDirectory);
         Assert::string($workingDirectory);
 
-        if($this->filesystem->exists($workingDirectory) === false) {
+        if ($this->filesystem->exists($workingDirectory) === false) {
             $this->filesystem->mkdir($workingDirectory, 0770);
         }
 

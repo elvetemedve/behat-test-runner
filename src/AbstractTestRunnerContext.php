@@ -69,7 +69,7 @@ abstract class AbstractTestRunnerContext implements Context, TestRunnerContextIn
 
     protected function createFile(string $fileName, string $content): void
     {
-        if($this->filesystem->exists($fileName)) {
+        if ($this->filesystem->exists($fileName)) {
             $backupFileName = $fileName . '.backup';
             $this->filesystem->copy($fileName, $backupFileName, true);
             $this->backupFiles[$fileName] = $backupFileName;
@@ -88,7 +88,7 @@ abstract class AbstractTestRunnerContext implements Context, TestRunnerContextIn
         }
 
         $backupFiles = $this->backupFiles;
-        foreach($backupFiles as $original => $backupFile) {
+        foreach ($backupFiles as $original => $backupFile) {
             $this->filesystem->copy($backupFile, $original, true);
             $this->filesystem->remove($backupFile);
         }

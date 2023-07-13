@@ -23,7 +23,7 @@ final class TestRunnerContext extends AbstractTestRunnerContext
      */
     public function iHaveTheFeature(PyStringNode $input): void
     {
-        $file = sprintf('%s/features/feature.feature', $this->getWorkingDirectory());
+        $file = sprintf('%s/features/generated.feature', $this->getWorkingDirectory());
         $this->createFile($file, $input->getRaw());
     }
 

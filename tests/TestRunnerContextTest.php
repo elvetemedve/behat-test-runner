@@ -255,8 +255,6 @@ final class TestRunnerContextTest extends TestCase
 
     public function test_it_will_backup_existing_files_and_restore_them_automatically_afterwards(): void
     {
-        mkdir('/var/www/html/test');
-        file_put_contents('/var/www/html/test/behat.yml', 'test');
         $this->assertFileExists('/var/www/html/test/behat.yml');
         $this->directoryService->expects($this->once())
             ->method('getWorkingDirectory')

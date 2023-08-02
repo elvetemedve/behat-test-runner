@@ -92,11 +92,12 @@ abstract class AbstractTestRunnerContext implements Context, TestRunnerContextIn
             $this->files = [];
         }
 
-        /** @var string $directoryRoot */
         $directoryRoot = $this->getDocumentRoot();
-        $result = $this->finder->in($directoryRoot);
-        if (count($result) === 0) {
-            $this->filesystem->remove($directoryRoot);
+        if ($directoryRoot && $this->filesystem->exists($directoryRoot)) {
+            $result = $this->finder->in($directoryRoot);
+            if (count($result) === 0) {
+                $this->filesystem->remove($directoryRoot);
+            }
         }
 
         $backupFiles = $this->backupFiles;
@@ -169,7 +170,9 @@ abstract class AbstractTestRunnerContext implements Context, TestRunnerContextIn
         $workingDirectory = $this->getWorkingDirectory();
         Assert::string($workingDirectory);
 
-        $process = $this->processFactory->createFromInput(new BehatInput($phpParameters, $parameters, $workingDirectory));
+        $process = $this->processFactory->createFromInput(
+            new BehatInput($phpParameters, $parameters, $workingDirectory)
+        );
         $this->behatProcess = $process;
         $this->addProcess($process);
         $process->run();

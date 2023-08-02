@@ -81,6 +81,11 @@ final class TestRunnerContextTest extends TestCase
             ->method('remove')
             ->with('/test');
 
+        $this->fileSystem->expects($this->once())
+            ->method('exists')
+            ->with('/test')
+            ->willReturn(true);
+
         $this->testRunnerContext->afterRunTests($mockScope);
     }
 
@@ -174,6 +179,10 @@ final class TestRunnerContextTest extends TestCase
         $this->fileSystem->expects($this->once())
             ->method('remove')
             ->with('/test');
+        $this->fileSystem->expects($this->once())
+            ->method('exists')
+            ->with('/test')
+            ->willReturn(true);
 
         $this->testRunnerContext->afterRunTests($mockScope);
     }
@@ -194,6 +203,14 @@ final class TestRunnerContextTest extends TestCase
                 [['/var/www/html/test/document_root/test.txt']],
                 [$basePath]
             ));
+
+        $this->fileSystem->expects($this->exactly(2))
+            ->method('exists')
+            ->with(...$this->withConsecutive(
+                ['/var/www/html/test/document_root/test.txt'],
+                ['/var/www/html/test/document_root'],
+            ))
+            ->willReturnOnConsecutiveCalls(false, true);
 
         $this->finder->expects($this->once())
             ->method('in')
@@ -293,11 +310,6 @@ final class TestRunnerContextTest extends TestCase
             ->method('getWorkingDirectory')
             ->willReturn('/var/www/html/test');
 
-        $this->fileSystem->expects($this->once())
-            ->method('exists')
-            ->with('/var/www/html/test/behat.yml')
-            ->willReturn(true);
-
         $this->fileSystem->expects($this->exactly(2))
             ->method('copy')
             ->with(...$this->withConsecutive(
@@ -315,6 +327,14 @@ final class TestRunnerContextTest extends TestCase
             ->method('in')
             ->with('/test')
             ->willReturnSelf();
+
+        $this->fileSystem->expects($this->exactly(2))
+            ->method('exists')
+            ->with(...$this->withConsecutive(
+                ['/var/www/html/test/behat.yml'],
+                ['/test']
+            ))
+            ->willReturnOnConsecutiveCalls(true, true);
 
         $this->fileSystem->expects($this->exactly(3))
             ->method('remove')

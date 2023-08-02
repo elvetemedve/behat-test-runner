@@ -14,6 +14,7 @@ use SEEC\BehatTestRunner\Context\Components\ProcessFactory\Input\WebserverInput;
 use SEEC\BehatTestRunner\Context\Services\WorkingDirectoryService;
 use SEEC\BehatTestRunner\Context\Services\WorkingDirectoryServiceInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 use Webmozart\Assert\Assert;
 
@@ -27,6 +28,8 @@ abstract class AbstractTestRunnerContext implements Context, TestRunnerContextIn
 
     private ?Process $behatProcess = null;
 
+    private Finder $finder;
+
     private array $processes = [];
 
     private array $files = [];
@@ -37,11 +40,13 @@ abstract class AbstractTestRunnerContext implements Context, TestRunnerContextIn
         ?Filesystem $fileSystem = null,
         ?ProcessFactoryInterface $processFactory = null,
         ?WorkingDirectoryServiceInterface $workingDirectoryService = null,
-        ?string $workingDirectory = null
+        ?string $workingDirectory = null,
+        ?Finder $finder = null
     ) {
         $this->filesystem = $fileSystem ?: new Filesystem();
         $this->processFactory = $processFactory ?: new ProcessFactory();
         $this->directoryService = $workingDirectoryService ?: new WorkingDirectoryService($workingDirectory);
+        $this->finder = $finder ?? new Finder();
     }
 
     /**
@@ -85,6 +90,13 @@ abstract class AbstractTestRunnerContext implements Context, TestRunnerContextIn
         if ($files !== []) {
             $this->filesystem->remove($files);
             $this->files = [];
+        }
+
+        /** @var string $directoryRoot */
+        $directoryRoot = $this->getDocumentRoot();
+        $result = $this->finder->in($directoryRoot);
+        if (count($result) === 0) {
+            $this->filesystem->remove($directoryRoot);
         }
 
         $backupFiles = $this->backupFiles;

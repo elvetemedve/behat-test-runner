@@ -18,6 +18,7 @@ use SEEC\BehatTestRunner\Context\Services\WorkingDirectoryServiceInterface;
 use SEEC\BehatTestRunner\Context\TestRunnerContext;
 use SEEC\PhpUnit\Helper\ConsecutiveParams;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
 if (defined('BEHAT_BIN_PATH') === false) {
@@ -37,6 +38,9 @@ final class TestRunnerContextTest extends TestCase
     /** @var object|MockObject|WorkingDirectoryServiceInterface */
     private object $directoryService;
 
+    /** @var Finder|MockObject|object */
+    private object $finder;
+
     private TestRunnerContext $testRunnerContext;
 
     public function setUp(): void
@@ -44,11 +48,13 @@ final class TestRunnerContextTest extends TestCase
         $this->processFactory = $this->createMock(ProcessFactoryInterface::class);
         $this->fileSystem = $this->createMock(Filesystem::class);
         $this->directoryService = $this->createMock(WorkingDirectoryServiceInterface::class);
+        $this->finder = $this->createMock(Finder::class);
         $this->testRunnerContext = new TestRunnerContext(
             $this->fileSystem,
             $this->processFactory,
             $this->directoryService,
-            '/var/www/html/test'
+            '/var/www/html/test',
+            $this->finder
         );
     }
 
@@ -63,8 +69,17 @@ final class TestRunnerContextTest extends TestCase
     public function test_it_will_go_trough_defined_tear_down_methods_correctly(): void
     {
         $mockScope = $this->createMock(AfterTestScope::class);
-        $this->fileSystem->expects($this->never())
-            ->method('remove');
+
+        $this->directoryService->expects($this->once())
+            ->method('getDocumentRoot')
+            ->willReturn('/test');
+        $this->finder->expects($this->once())
+            ->method('in')
+            ->with('/test')
+            ->willReturnSelf();
+        $this->fileSystem->expects($this->once())
+            ->method('remove')
+            ->with('/test');
 
         $this->testRunnerContext->afterRunTests($mockScope);
     }
@@ -149,22 +164,41 @@ final class TestRunnerContextTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Output of secondary Behat process has been saved to /tmp/behat-test-runner.out');
 
+        $this->directoryService->expects($this->once())
+            ->method('getDocumentRoot')
+            ->willReturn('/test');
+        $this->finder->expects($this->once())
+            ->method('in')
+            ->with('/test')
+            ->willReturnSelf();
+        $this->fileSystem->expects($this->once())
+            ->method('remove')
+            ->with('/test');
+
         $this->testRunnerContext->afterRunTests($mockScope);
     }
 
     public function test_it_can_create_arbitrary_files_and_they_will_be_removed_after_the_test(): void
     {
         $basePath = '/var/www/html/test/document_root';
-        $this->directoryService->expects($this->once())
+        $this->directoryService->expects($this->exactly(2))
             ->method('getDocumentRoot')
             ->willReturn($basePath);
         $this->fileSystem->expects($this->once())
             ->method('dumpFile')
             ->with('/var/www/html/test/document_root/test.txt', 'test');
 
-        $this->fileSystem->expects($this->once())
+        $this->fileSystem->expects($this->exactly(2))
             ->method('remove')
-            ->with(['/var/www/html/test/document_root/test.txt']);
+            ->with(...$this->withConsecutive(
+                [['/var/www/html/test/document_root/test.txt']],
+                [$basePath]
+            ));
+
+        $this->finder->expects($this->once())
+            ->method('in')
+            ->with($basePath)
+            ->willReturnSelf();
 
         $this->testRunnerContext->iHaveTheFileInDocumentRoot('test.txt', new PyStringNode(['test'], 1));
         $this->testRunnerContext->afterRunTests($this->createMock(AfterTestScope::class));
@@ -263,6 +297,7 @@ final class TestRunnerContextTest extends TestCase
             ->method('exists')
             ->with('/var/www/html/test/behat.yml')
             ->willReturn(true);
+
         $this->fileSystem->expects($this->exactly(2))
             ->method('copy')
             ->with(...$this->withConsecutive(
@@ -272,6 +307,22 @@ final class TestRunnerContextTest extends TestCase
         $this->fileSystem->expects($this->once())
             ->method('dumpFile')
             ->with('/var/www/html/test/behat.yml', 'test');
+
+        $this->directoryService->expects($this->once())
+            ->method('getDocumentRoot')
+            ->willReturn('/test');
+        $this->finder->expects($this->once())
+            ->method('in')
+            ->with('/test')
+            ->willReturnSelf();
+
+        $this->fileSystem->expects($this->exactly(3))
+            ->method('remove')
+            ->with(...$this->withConsecutive(
+                [['/var/www/html/test/behat.yml']],
+                ['/test'],
+                ['/var/www/html/test/behat.yml.backup']
+            ));
 
         $content = new PyStringNode(['test'], 1);
         $this->testRunnerContext->iHaveTheConfiguration($content);

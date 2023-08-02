@@ -5,7 +5,7 @@
     "keywords": ["tdd","bdd","behat","extension"],
     "homepage": "https://github.com/nopenopenope/behat-test-runner",
     "license": "MIT",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "Geza Buza",
@@ -26,7 +26,8 @@
         "symfony/process": "^4.4|^5.0",
         "webmozart/assert": "^1.11",
         "ext-curl": "*",
-        "seec/phpunit-consecutive-params": "dev-master"
+        "seec/phpunit-consecutive-params": "^1",
+        "symfony/finder": "^5|^6"
     },
     "require-dev": {
         "behat/behat": "^3.7",

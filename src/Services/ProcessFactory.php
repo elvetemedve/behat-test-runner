@@ -33,7 +33,7 @@ class ProcessFactory
     public function createBehatProcess($workingDirectory, $parameters = '', $phpParameters = '')
     {
         return new Process(
-            sprintf('%s %s %s %s', $this->phpBin, $phpParameters, escapeshellarg(BEHAT_BIN_PATH), $parameters),
+            [$this->phpBin, trim(implode(' ', [$phpParameters, 'vendor/bin/behat', $parameters]))],
             $workingDirectory
         );
     }
